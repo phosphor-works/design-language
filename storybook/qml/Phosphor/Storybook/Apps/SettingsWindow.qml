@@ -41,6 +41,7 @@ WindowFrame {
                 "scheme": "dark",
                 "accent": "blue",
                 "corners": 16,
+                "spread": 10,
                 "density": "comfortable",
                 "edge": "top",
                 "media": true,
@@ -54,6 +55,7 @@ WindowFrame {
             "values": {
                 "scheme": "light",
                 "corners": 24,
+                "spread": 22,
                 "glow": false
             },
             "palette": {
@@ -79,6 +81,7 @@ WindowFrame {
             "values": {
                 "scheme": "dark",
                 "corners": 8,
+                "spread": 10,
                 "density": "compact",
                 "edge": "bottom",
                 "media": false,
@@ -125,6 +128,7 @@ WindowFrame {
             "scheme": "dark",
             "accent": "blue",
             "corners": 16,
+            "spread": 10,
             "density": "comfortable",
             "glow": true,
             "wallpaper": "Soft orbit",
@@ -133,7 +137,7 @@ WindowFrame {
             "edge": "top",
             "fused": true,
             "media": true,
-            "stats": true,
+            "stats": "numbers",
             "visualizer": "bars"
         })
 
@@ -165,7 +169,32 @@ WindowFrame {
             return;
         for (const key of ["scheme", "accent", "corners", "density", "glow"])
             Session.setGlobal(key, values[key]);
-        Theme.palette = presets.find(entry => entry.id === values.preset).palette;
+        Metrics.spread = values.spread;
+        Theme.palette = _palette(values);
+    }
+
+    // The palette of the preset. When the shell follows the wallpaper, the colors of the wallpaper
+    // replace the accent and the spectrum. Each ground also gets a small part of the first color.
+    function _palette(values: var): var {
+        const palette = Object.assign({}, presets.find(entry => entry.id === values.preset).palette);
+        const colors = wallpapers.find(entry => entry.name === values.wallpaper).colors;
+        if (!values.follow || colors.length < 4)
+            return palette;
+        const grounds = Theme.palettes[values.scheme === "light" ? "light" : "dark"];
+        const roles = {
+            "background": "desktop",
+            "surface_container_low": "sidebar",
+            "surface_container": "surface",
+            "surface": "card",
+            "surface_container_high": "field",
+            "surface_container_highest": "track"
+        };
+        for (const role in roles)
+            palette[role] = Qt.tint(palette[role] ?? grounds[roles[role]], Theme.tint(colors[0], 0.07));
+        // The light scheme needs a darker accent, so that the ink on it stays readable.
+        palette.primary = values.scheme === "light" ? Qt.darker(colors[1], 1.5) : colors[1];
+        colors.forEach((color, index) => palette["brand_stop_" + index] = color);
+        return palette;
     }
 
     function discard() {
@@ -184,7 +213,10 @@ WindowFrame {
     focused: true
 
     // The palette of a preset is a value of the Theme, which lives longer than this window.
-    Component.onDestruction: Theme.palette = ({})
+    Component.onDestruction: {
+        Theme.palette = ({});
+        Metrics.spread = _defaults.spread;
+    }
 
     component Page: Column {
         width: Math.min(pageArea.width - 2 * Metrics.pageMargin, Metrics.pageWidth)
@@ -412,6 +444,18 @@ WindowFrame {
                         stepSize: 2
                         value: root.draft.corners
                         onMoved: root.set("corners", value)
+                    }
+                }
+                SettingRow {
+                    text: "Gap between windows"
+
+                    Slider {
+                        width: 220
+                        from: 0
+                        to: 24
+                        stepSize: 2
+                        value: root.draft.spread
+                        onMoved: root.set("spread", value)
                     }
                 }
                 SettingRow {
@@ -652,8 +696,27 @@ WindowFrame {
                 SettingRow {
                     text: "System load"
 
-                    Toggle {
+                    Choice {
                         key: "stats"
+                        label: "System load"
+                        options: [
+                            {
+                                "value": "numbers",
+                                "text": "Numbers"
+                            },
+                            {
+                                "value": "meters",
+                                "text": "Meters"
+                            },
+                            {
+                                "value": "traces",
+                                "text": "Traces"
+                            },
+                            {
+                                "value": "off",
+                                "text": "Off"
+                            }
+                        ]
                     }
                 }
             }

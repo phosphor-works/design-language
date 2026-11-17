@@ -42,6 +42,19 @@ Story {
     }
 
     Variant {
+        name: "Wallpaper, the shell follows its colors"
+
+        SettingsWindow {
+            page: "wallpaper"
+            live: false
+            start: ({
+                    "wallpaper": "After hours",
+                    "follow": true
+                })
+        }
+    }
+
+    Variant {
         name: "Bar, after the Ember preset: the bottom edge, no media"
 
         SettingsWindow {

@@ -55,7 +55,8 @@ Item {
 
             Icon {
                 anchors.centerIn: parent
-                visible: root.width >= 60 && parent.modelData.icon !== undefined
+                // A window that is smaller than the icon shows no icon.
+                visible: root.width >= 60 && parent.modelData.icon !== undefined && parent.width >= size + Metrics.space6 && parent.height >= size + Metrics.space6
                 name: parent.modelData.icon ?? ""
                 size: Metrics.iconSmall
                 color: parent.focused ? Theme.text : Theme.muted

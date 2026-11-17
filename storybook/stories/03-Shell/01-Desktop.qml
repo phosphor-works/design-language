@@ -277,15 +277,14 @@ Item {
                     active: scene.panel === "tray"
                     onClicked: scene.toggle("tray")
                 }
-                BarChip {
+                // A long press changes the style of the chip.
+                StatsChip {
                     id: statsChip
 
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "System"
-                    icons: ["chip"]
-                    label: stats.stats[0].value
                     active: scene.panel === "stats"
                     onClicked: scene.toggle("stats")
+                    onPressAndHold: style = style === "numbers" ? "meters" : style === "meters" ? "traces" : "numbers"
                 }
                 BarChip {
                     id: statusChip

@@ -27,7 +27,7 @@ Column {
             "title": "Screenshot",
             "body": "Saved to Pictures",
             "time": "18m",
-            "picture": true
+            "picture": Qt.resolvedUrl("../../../../assets/cover-a-walk.jpg")
         },
         {
             "icon": "disk",
@@ -59,7 +59,7 @@ Column {
             body: modelData.body
             time: modelData.time
             count: modelData.count ?? 1
-            picture: modelData.picture ?? false
+            picture: modelData.picture ?? ""
             onPressed: expanded = !expanded
             onDismissed: root.items = root.items.filter((item, at) => at !== index)
         }

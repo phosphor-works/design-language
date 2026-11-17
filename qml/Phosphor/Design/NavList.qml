@@ -21,6 +21,10 @@ import QtQuick.Templates as T
 //
 // `filter` shows only the pages whose name contains it. A filter opens each category, because a
 // closed category hides a result.
+//
+// A page with a `count` shows that number as a badge. An entry with `divider: true` is a line
+// between two groups. `compact` makes the list a column of icons for a narrow window. The
+// categories then go away, and a page with no icon shows its first letter.
 Item {
     id: root
 
@@ -28,6 +32,7 @@ Item {
     property string current
     property string filter
     property var collapsed: [] // the `text` of each closed category
+    property bool compact: false
 
     signal picked(string id)
 
@@ -49,7 +54,7 @@ Item {
         return _needle === "" || text.toLowerCase().includes(_needle);
     }
 
-    implicitWidth: 220
+    implicitWidth: compact ? Metrics.navRowHeight + Metrics.space12 : 220
     implicitHeight: column.height
 
     // No item animates during the first layout of the list.
@@ -63,11 +68,12 @@ Item {
         property bool isCurrent: false
         property bool isCategory: false
         property bool expanded: false
+        property int count: 0
 
         width: parent ? parent.width : 0
         implicitHeight: Metrics.navRowHeight
-        leftPadding: Metrics.padRow + depth * Metrics.navIndent
-        rightPadding: Metrics.space8
+        leftPadding: root.compact ? (width - Metrics.iconSmall) / 2 : Metrics.padRow + depth * Metrics.navIndent
+        rightPadding: root.compact ? leftPadding : Metrics.space8
 
         Accessible.name: text
 
@@ -86,14 +92,26 @@ Item {
                 }
             }
 
+            // In the compact list, a page with no icon shows its first letter.
+            Text {
+                anchors.centerIn: parent
+                visible: root.compact && row.iconName === ""
+                text: row.text.charAt(0).toUpperCase()
+                color: row.isCurrent ? Theme.accent : label.color
+                font.family: Metrics.fontUi
+                font.pixelSize: Metrics.textBody
+                font.weight: Metrics.weightStrong
+            }
+
             Text {
                 id: label
 
                 anchors.left: glyph.visible ? glyph.right : parent.left
                 anchors.leftMargin: glyph.visible ? 11 : 0
-                anchors.right: chevron.visible ? chevron.left : parent.right
-                anchors.rightMargin: chevron.visible ? 6 : 0
+                anchors.right: chevron.visible ? chevron.left : tally.visible ? tally.left : parent.right
+                anchors.rightMargin: chevron.visible || tally.visible ? 6 : 0
                 anchors.verticalCenter: parent.verticalCenter
+                visible: !root.compact
                 text: row.text
                 elide: Text.ElideRight
                 color: row.isCurrent || row.hovered || row.isCategory ? Theme.text : Theme.muted
@@ -111,7 +129,7 @@ Item {
 
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                visible: row.isCategory
+                visible: row.isCategory && !root.compact
                 name: "chevronRight"
                 size: Metrics.iconSmall
                 color: Theme.muted
@@ -122,6 +140,19 @@ Item {
 
                     FlowSpring {}
                 }
+            }
+
+            // The compact list has no space for a number, so the badge is a dot at the icon.
+            Badge {
+                id: tally
+
+                anchors.right: parent.right
+                anchors.rightMargin: root.compact ? -Metrics.space6 : 0
+                anchors.verticalCenter: root.compact ? undefined : parent.verticalCenter
+                anchors.top: root.compact ? parent.top : undefined
+                anchors.topMargin: Metrics.space4
+                visible: row.count > 0
+                count: root.compact ? 0 : row.count
             }
         }
 
@@ -161,8 +192,9 @@ Item {
                 id: entry
 
                 required property var modelData
+                readonly property bool isDivider: modelData.divider === true
                 readonly property bool isCategory: modelData.children !== undefined
-                readonly property bool open: root._needle !== "" || root.collapsed.indexOf(modelData.text) < 0
+                readonly property bool open: root.compact || root._needle !== "" || root.collapsed.indexOf(modelData.text) < 0
                 readonly property bool holdsCurrent: isCategory && modelData.children.some(page => page.id === root.current)
                 readonly property bool isCurrent: !isCategory && modelData.id === root.current
                 property Item currentPage: null
@@ -170,14 +202,32 @@ Item {
                 readonly property Item mark: holdsCurrent ? (open && currentPage ? currentPage : header) : isCurrent ? header : null
 
                 width: column.width
-                visible: isCategory ? modelData.children.some(page => root._matches(page.text)) : root._matches(modelData.text)
+                visible: isDivider ? root._needle === "" : isCategory ? modelData.children.some(page => root._matches(page.text)) : root._matches(modelData.text)
                 onMarkChanged: if (mark)
                     root._marked = mark
+
+                // A line between two groups of entries.
+                Item {
+                    width: parent.width
+                    height: Metrics.space12
+                    visible: entry.isDivider
+
+                    Rectangle {
+                        x: Metrics.padRow
+                        width: parent.width - 2 * Metrics.padRow
+                        height: Metrics.lineWidth
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: Theme.line
+                    }
+                }
 
                 Row {
                     id: header
 
-                    text: entry.modelData.text
+                    // The compact list shows only pages, so the header of a category goes away.
+                    visible: !entry.isDivider && !(root.compact && entry.isCategory)
+                    text: entry.modelData.text ?? ""
+                    count: entry.modelData.count ?? 0
                     iconName: entry.modelData.icon ?? ""
                     isCategory: entry.isCategory
                     expanded: entry.open
@@ -228,6 +278,7 @@ Item {
 
                                 text: modelData.text
                                 iconName: modelData.icon ?? ""
+                                count: modelData.count ?? 0
                                 depth: 1
                                 visible: root._matches(modelData.text)
                                 isCurrent: modelData.id === root.current

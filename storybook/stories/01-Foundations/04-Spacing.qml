@@ -202,4 +202,8 @@ Doc {
     Para {
         text: "The compact density changes the heights on the Layout page. It does not change this ramp. Items become shorter, but the gaps stay the same."
     }
+
+    Para {
+        text: "The space between two windows is an input, as the corner radius is. The user sets Metrics.spread in the settings app, and surfaceGap and screenInset follow it. Thus the windows, the bar and a panel that is not attached keep the same distance."
+    }
 }

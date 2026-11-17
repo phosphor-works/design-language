@@ -79,6 +79,7 @@ that your change affects.
 | Motion | A render is one frame after the story stops. It cannot show a spring, an overshoot, a stretch or a fade |
 | Hover, press and keyboard focus | No program moves the pointer or presses a key |
 | Blur and round pictures | The offscreen platform renders without a GPU. The glow of `ShellBody` is a `MultiEffect` and is absent. `Artwork` then shows its picture with square corners. Render with the GPU to see them (see below) |
+| An icon behind a clip | The software renderer draws an icon that a clip hides. The scrolling strip of the Stage story shows such icons at its sides. A render with the GPU does not |
 | The correct fonts | `Metrics` uses a different font when Manrope and JetBrains Mono are not installed. The Typography page shows the fonts that it found |
 
 `Session.capture` is true during a capture. A story uses it to start in the state that the capture must show. For

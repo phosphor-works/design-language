@@ -124,4 +124,58 @@ Story {
             onPicked: id => current = id
         }
     }
+
+    Variant {
+        name: "Counts and a divider"
+        surface: true
+
+        NavList {
+            width: 220
+            model: [
+                {
+                    "id": "inbox",
+                    "text": "Notifications",
+                    "icon": "bell",
+                    "count": 3
+                },
+                {
+                    "id": "updates",
+                    "text": "Updates",
+                    "icon": "download",
+                    "count": 12
+                },
+                {
+                    "divider": true
+                },
+                {
+                    "id": "about",
+                    "text": "About",
+                    "icon": "phosphor"
+                }
+            ]
+            current: "inbox"
+            onPicked: id => current = id
+        }
+    }
+
+    Variant {
+        name: "Compact: only the pages, as icons"
+        surface: true
+
+        NavList {
+            compact: true
+            model: story.pages.concat([
+                {
+                    "divider": true
+                },
+                {
+                    "id": "updates",
+                    "text": "Updates",
+                    "count": 12
+                }
+            ])
+            current: "tiling"
+            onPicked: id => current = id
+        }
+    }
 }

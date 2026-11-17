@@ -20,79 +20,15 @@ Column {
     property int current: 0
     property string mode: "tiling" // snapping, tiling, scrolling
     // Each workspace: { name, windows }. See LayoutPreview for a window.
-    property var workspaces: [
-        {
-            "name": "Develop",
-            "windows": [
-                {
-                    "icon": "edit",
-                    "focused": true
-                },
-                {
-                    "icon": "globe"
-                },
-                {
-                    "icon": "terminal"
-                }
-            ]
-        },
-        {
-            "name": "Build",
-            "windows": [
-                {
-                    "icon": "terminal"
-                },
-                {
-                    "icon": "terminal"
-                }
-            ]
-        },
-        {
-            "name": "",
-            "windows": []
-        },
-        {
-            "name": "Listen",
-            "windows": [
-                {
-                    "icon": "music"
-                }
-            ]
-        }
-    ]
+    property var workspaces: SamplePlacement.workspaces
 
     signal picked(int index)
 
     readonly property real _card: 196
 
-    // The positions of `count` windows in a mode. The real shell gets them from the placement
-    // engine. This sample gives each mode a different look.
+    // The positions of the windows in a mode, for a small picture.
     function arrange(windows: var, mode: string): var {
-        const count = windows.length;
-        return windows.map((window, index) => {
-            let box;
-            if (mode === "scrolling") {
-                const width = count > 2 ? 0.42 : 1 / Math.max(1, count);
-                box = [index * width, 0, width, 1];
-            } else if (mode === "snapping") {
-                const columns = Math.min(3, Math.max(1, count));
-                box = [(index % columns) / columns, 0.1, 1 / columns, 0.8];
-            } else if (count === 1) {
-                box = [0, 0, 1, 1];
-            } else if (index === 0) {
-                box = [0, 0, 0.58, 1];
-            } else {
-                box = [0.58, (index - 1) / (count - 1), 0.42, 1 / (count - 1)];
-            }
-            return {
-                "icon": window.icon,
-                "focused": window.focused,
-                "x": box[0],
-                "y": box[1],
-                "w": box[2],
-                "h": box[3]
-            };
-        });
+        return SamplePlacement.arrange(windows, mode);
     }
 
     width: workspaces.length * _card + (workspaces.length - 1) * Metrics.gapLoose + 2 * Metrics.padCard

@@ -8,6 +8,23 @@ import Phosphor.Storybook.Shell
 
 Story {
     Variant {
+        name: "In the bar: numbers, meters, traces"
+        surface: true
+
+        Row {
+            spacing: Metrics.space4
+
+            StatsChip {}
+            StatsChip {
+                style: "meters"
+            }
+            StatsChip {
+                style: "traces"
+            }
+        }
+    }
+
+    Variant {
         name: "All resources"
 
         PanelFrame {

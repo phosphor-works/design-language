@@ -90,6 +90,9 @@ The Foundations stories contain the full guide. Review a component against these
   Do not write an eyebrow above a title, a tagline, a helper sentence below a control, or a status sentence. Use
   an icon when the icon gives the same information. Put an explanation in a tooltip.
 - **Show the state.** Use a fill level, a position or a shape. Do not write a sentence that describes the state.
+- **The user sets three values of shape.** The corner radius (`Metrics.corners`), the density (`Metrics.density`)
+  and the space between windows (`Metrics.spread`) are inputs. Each radius, height and gap follows them. A preset
+  sets them together with a palette.
 - **Shape uses `Metrics`.** An inner radius is the outer radius minus the padding. A control that is on is
   rounder.
 
