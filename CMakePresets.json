@@ -1,0 +1,61 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "generator": "Ninja",
+            "cacheVariables": {
+                "BUILD_TESTING": "ON",
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+        {
+            "name": "dev",
+            "displayName": "Development, with tests, and with the stories of the PlasmaZones checkout when it is there",
+            "inherits": "base",
+            "binaryDir": "${sourceDir}/build"
+        },
+        {
+            "name": "standalone",
+            "displayName": "Qt only, with tests: no PlasmaZones checkout, the library's own stories",
+            "inherits": "base",
+            "binaryDir": "${sourceDir}/build-standalone",
+            "cacheVariables": { "PHOSPHOR_DESIGN_WITH_PHOSPHOR": "OFF" }
+        }
+    ],
+    "buildPresets": [
+        { "name": "dev", "configurePreset": "dev" },
+        { "name": "standalone", "configurePreset": "standalone" }
+    ],
+    "testPresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "output": { "outputOnFailure": true },
+            "execution": { "noTestsAction": "error" }
+        },
+        { "name": "dev", "inherits": "base", "configurePreset": "dev" },
+        { "name": "standalone", "inherits": "base", "configurePreset": "standalone" }
+    ],
+    "workflowPresets": [
+        {
+            "name": "dev",
+            "steps": [
+                { "type": "configure", "name": "dev" },
+                { "type": "build", "name": "dev" },
+                { "type": "test", "name": "dev" }
+            ]
+        },
+        {
+            "name": "standalone",
+            "steps": [
+                { "type": "configure", "name": "standalone" },
+                { "type": "build", "name": "standalone" },
+                { "type": "test", "name": "standalone" }
+            ]
+        }
+    ]
+}

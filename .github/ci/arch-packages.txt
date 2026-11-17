@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: 2026 fuddlesworth
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# The Arch packages that CI installs to configure, build and test the storybook.
+# One package for each line. CI ignores a comment after `#`.
+base-devel
+git
+cmake
+ninja
+python
+qt6-base
+# Qt Quick, Qt Quick Controls, Qt Quick Shapes and Qt Quick Effects.
+qt6-declarative
+# The offscreen platform renders with Mesa.
+mesa
+# The image has no fonts. Without a font, a story renders no text.
+noto-fonts

@@ -1,0 +1,135 @@
+# SPDX-FileCopyrightText: 2026 fuddlesworth
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Pull request and main CI, the same shape as the CI of phosphor-libs:
+#
+#   * Arch: configure, build and test from the standalone workflow preset, the
+#     same command as a local build. The tests render each story in the two
+#     schemes, check the text and test the guard hook.
+#   * Lint: clang-format and qmlformat on the files that a change touches, and
+#     the REUSE license check on the full tree.
+#
+# The standalone preset uses only Qt. No job builds the stories of the
+# PlasmaZones checkout (the dev preset).
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  arch:
+    name: Arch
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container:
+      image: archlinux:latest
+    steps:
+      # The image has no git, and actions/checkout needs it for a real clone.
+      - name: Bootstrap git
+        run: pacman -Syu --noconfirm --needed git
+
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install packages
+        run: |
+          set -euo pipefail
+          mapfile -t packages < <(sed -e 's/#.*//' -e 's/[[:space:]]//g' -e '/^$/d' .github/ci/arch-packages.txt)
+          for try in 1 2 3; do
+            pacman -S --noconfirm --needed "${packages[@]}" && exit 0
+            [ "$try" = 3 ] && exit 1
+            sleep 10
+          done
+
+      - name: Configure, build and test
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: cmake --workflow --preset standalone
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+      - name: Bootstrap git
+        run: pacman -Syu --noconfirm --needed git
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # clang ships clang-format, qt6-declarative ships qmlformat. From the same
+      # Arch packages that contributors use, because their output differs
+      # between major versions. The qmlformat step calls diff, and the image
+      # does not contain diffutils.
+      - name: Install the tools
+        run: |
+          pacman -S --noconfirm --needed clang diffutils qt6-declarative reuse
+          clang-format --version
+
+      - name: REUSE
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          reuse lint
+
+      # Only the files that a change touches, so that a difference elsewhere in
+      # the tree does not stop an unrelated pull request.
+      - name: Resolve changed files
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              BASE="${{ github.event.pull_request.base.sha }}"
+              git cat-file -e "$BASE^{commit}" 2>/dev/null || git fetch origin "$BASE"
+              RANGE="$BASE...HEAD"
+          else
+              RANGE="HEAD~1...HEAD"
+          fi
+          echo "Diff range: $RANGE"
+          git diff --name-only --diff-filter=ACMR "$RANGE" -- \
+              '*.cpp' '*.h' '*.hpp' '*.cc' '*.cxx' '*.qml' > changed.txt
+          echo "Changed files:"
+          cat changed.txt
+
+      - name: clang-format
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(grep -E '\.(cpp|h|hpp|cc|cxx)$' changed.txt || true)
+          if [ "${#files[@]}" -gt 0 ]; then
+            clang-format --dry-run -Werror "${files[@]}"
+          else
+            echo "No C++ files changed, skipping clang-format"
+          fi
+
+      - name: qmlformat
+        run: |
+          set -euo pipefail
+          export PATH="/usr/lib/qt6/bin:$PATH"
+          mapfile -t files < <(grep -E '\.qml$' changed.txt || true)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No QML files changed, skipping qmlformat"
+            exit 0
+          fi
+          unformatted=0
+          for f in "${files[@]}"; do
+            if ! qmlformat "$f" | diff -u --label "$f" --label "$f (qmlformat -i)" "$f" -; then
+              unformatted=1
+            fi
+          done
+          if [ "$unformatted" -ne 0 ]; then
+            echo "::error::The QML files above are not formatted as qmlformat -i would leave them. Run qmlformat -i on them."
+            exit 1
+          fi

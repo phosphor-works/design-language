@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2026 fuddlesworth
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+module Phosphor.Storybook
+Doc 1.0 Doc.qml
+Heading 1.0 Heading.qml
+Para 1.0 Para.qml
+Story 1.0 Story.qml
+Swatch 1.0 Swatch.qml
+Variant 1.0 Variant.qml
+DoDont 1.0 DoDont.qml
+Spec 1.0 Spec.qml
