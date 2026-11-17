@@ -160,14 +160,14 @@ Doc {
                 "width": 480
             }
         ]
-        rows: [["The user presses a control", "It scales to " + Metrics.pressScale + " on snap, and returns to 1 on release."], ["The user operates a switch", "The knob moves on snap. The knob is wider while the user holds it."], ["A selection moves", "The stretch indicator: its leading edge on flow, its trailing edge on trail."], ["A control goes on", "Its color fades. If its radius changes, the radius moves on flow."], ["A panel opens", "Its width moves on flow, and its height follows. Then its content fades in."], ["A list opens or closes", "Its height moves on flow. The rows below move with it."], ["The user drags a value", "No animation. The fill follows the pointer exactly."], ["An item changes color", "fade."]]
+        rows: [["The user presses a control", "It scales to " + Metrics.pressScale + " on snap, and returns to 1 on release."], ["The user operates a switch", "The knob moves on snap. The knob is wider while the user holds it."], ["A selection moves", "The stretch indicator: its leading edge on flow, its trailing edge on trail."], ["A control goes on", "Its color fades. If its radius changes, the radius moves on flow."], ["A panel opens", "Its width moves on flow, and its height follows. Then its content fades in."], ["A panel changes its page", "The new page comes in from the side on flow. The same panel changes size on flow."], ["A list opens or closes", "Its height moves on flow. The rows below move with it."], ["The user drags a value", "No animation. The fill follows the pointer exactly."], ["An item changes color", "fade."]]
     }
 
     Heading {
         text: "The four moves"
     }
     Para {
-        text: "Grow. A surface opens from the control that the user pressed, and closes into the same control. A surface does not appear in the middle of the screen. The Shell body story shows this move."
+        text: "Grow. A surface opens from the control that the user pressed, and closes into the same control. A surface that a control opens does not appear in the middle of the screen. The Desktop story shows this move. A dialog that the system opens has no control, so it opens in the center."
     }
     Para {
         text: "Stretch. A selection does not jump, and it does not move as a block. Its front edge moves first and its rear edge follows. Thus the selection becomes longer in the direction of the move."

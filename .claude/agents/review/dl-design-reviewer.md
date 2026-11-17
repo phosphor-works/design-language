@@ -49,7 +49,7 @@ wrong edit.
 | --- | --- |
 | Tokens | A color, a radius, a font family, a font size, a gap, an inset or a duration as a literal value in a component. A dimension of the component itself is not a finding. `"transparent"` is the one permitted color literal |
 | Space | A distance that is not a step of `Metrics.spaceRamp`. A step used where a name applies (`gap`, `pad`, `padCard`) |
-| Type | A font size that is not one of the six in `Metrics`. A weight that is not 500 or 600. An uppercase label. Letter spacing |
+| Type | A font size that is not in `Metrics`. `textDisplay` on text that is not the clock of the lock screen. A weight that is not 500 or 600. An uppercase label. Letter spacing |
 | The guide | A change that adds, renames or redefines a token and does not change its guide page. A value typed into a guide page |
 | Color shows a state | An accent, a cyan, a rose or a gradient used as decoration. Cyan for a purpose that is not focus. Rose for a purpose that is not an error, a destructive action or an unread item. The spectrum on an item that is not the edge of `ShellBody` or a logo |
 | Ink | Text or an icon on an accent fill that does not use `Theme.ink`. A list row with a solid accent fill. The current row must use `Theme.selected` and keep `Theme.text` |

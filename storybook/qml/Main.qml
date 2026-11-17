@@ -287,6 +287,15 @@ Rectangle {
             width: canvas.width
             height: fills ? canvas.height : item ? Math.max(item.implicitHeight, 1) : 0
             source: Session.storyUrl(Session.story)
+            // A large story takes time to make. The window continues to respond during that time.
+            asynchronous: !Session.blocking
+        }
+
+        Spinner {
+            anchors.horizontalCenter: parent.horizontalCenter
+            y: 96
+            size: 22
+            visible: loader.status === Loader.Loading
         }
 
         Label {

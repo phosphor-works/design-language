@@ -130,8 +130,11 @@ Story {
 - The name of a variant is the state, in a small number of words. The title shows the name of the component.
 - Use the content that the component will contain: a network name, a real setting. Do not use placeholder text.
 - Make a variant operate when the user presses it. Then the user can see the motion in the storybook.
-- For a story that is one scene, use an `Item` root with `property bool fill: true`. The Shell body story is an
+- For a story that is one scene, use an `Item` root with `property bool fill: true`. The Desktop story is an
   example.
+- A surface of the shell is not a library component. Put it in `storybook/qml/Phosphor/Storybook/Shell/` with
+  sample data, and add it to the `qmldir` there. Give it one property for each state, so that a story can show the
+  state. Put a part that two surfaces use in `Phosphor.Design`.
 - `Session.capture` is true during a `--shot` run. Use it to start in the state that the capture must show. Also
   use it to stop an item that does not become stable.
 - A guide page uses `Doc` with `Heading` and `Para`. Use `Spec` for a table and `DoDont` for a pair of examples.

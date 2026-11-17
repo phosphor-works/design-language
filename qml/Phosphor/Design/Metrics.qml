@@ -92,6 +92,7 @@ QtObject {
     readonly property int textRow: 14 // what you read to choose: list rows, fields
     readonly property int textHeading: 15 // the name of a thing that owns a surface
     readonly property int textTitle: 22 // the name of a page
+    readonly property int textDisplay: 88 // the clock of the lock screen, and no other text
 
     readonly property int lineCaption: 14
     readonly property int lineLabel: 16
@@ -99,6 +100,7 @@ QtObject {
     readonly property int lineRow: 20
     readonly property int lineHeading: 20
     readonly property int lineTitle: 28
+    readonly property int lineDisplay: 96
 
     readonly property int weightBody: Font.Medium // 500: running text and values
     readonly property int weightStrong: Font.DemiBold // 600: names, and anything you can press

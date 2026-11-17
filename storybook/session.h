@@ -21,6 +21,7 @@ class Session : public QObject
     Q_PROPERTY(QVariantList stories READ stories NOTIFY storiesChanged)
     Q_PROPERTY(QString error READ error NOTIFY errorChanged)
     Q_PROPERTY(bool capture READ capture CONSTANT)
+    Q_PROPERTY(bool blocking READ blocking CONSTANT)
 
 public:
     explicit Session(const QStringList& storyRoots, bool capture, QObject* parent = nullptr);
@@ -56,6 +57,19 @@ public:
         return m_capture;
     }
 
+    /// True when a story must load before the next line of the host runs. A `--shot` run has a
+    /// fixed time before the capture, and a `--tour` run measures the load. In a window for the
+    /// user, a story loads in parts between frames, so the window continues to respond. Set it
+    /// before the QML loads.
+    bool blocking() const
+    {
+        return m_capture || m_blocking;
+    }
+    void setBlocking(bool blocking)
+    {
+        m_blocking = blocking;
+    }
+
     /// Reads the story directories again. A new file becomes a story without a restart.
     void rescan();
     void save() const;
@@ -73,6 +87,7 @@ private:
     QVariantList m_stories;
     QString m_error;
     bool m_capture = false;
+    bool m_blocking = false;
 };
 
 } // namespace PhosphorStorybook

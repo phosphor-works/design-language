@@ -86,11 +86,11 @@ QtObject {
 
     // ── Grounds, from the back forward ──────────────────────────────────────
     readonly property color desktop: _role("background", _now.desktop) // behind everything
-    readonly property color sidebar: _now.sidebar // navigation columns
+    readonly property color sidebar: _role("surface_container_low", _now.sidebar) // navigation columns
     readonly property color surface: _role("surface_container", _now.surface) // the shell body, windows
     readonly property color card: _role("surface", _now.card) // a group of rows on a window
     readonly property color field: _role("surface_container_high", _now.field) // fields, resting buttons
-    readonly property color track: _now.track // the unlit part of a control
+    readonly property color track: _role("surface_container_highest", _now.track) // the unlit part of a control
 
     // ── Roles ───────────────────────────────────────────────────────────────
     readonly property color accent: _role("primary", ({
@@ -106,7 +106,7 @@ QtObject {
 
     readonly property color text: _role("on_surface", _now.text) // names and values
     readonly property color muted: _role("on_surface_variant", _now.muted) // secondary values, idle icons
-    readonly property color ink: _now.ink // text and icons on a lit fill
+    readonly property color ink: _role("on_primary", _now.ink) // text and icons on a lit fill
 
     // ── States ──────────────────────────────────────────────────────────────
     readonly property color line: _now.line // a 1 px edge between two grounds

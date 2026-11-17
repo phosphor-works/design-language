@@ -22,7 +22,7 @@ This file contains the rules that a session gets wrong. The skills contain the p
 - **The library uses only Qt.** A file in `qml/` imports `QtQuick`, `QtQuick.Templates`, `QtQuick.Shapes`,
   `QtQuick.Effects`, `QtQuick.Controls.impl` and the two modules of this repository. It does not import a phosphor
   library, Kirigami or a KDE Framework. The phosphor-libs repository and each app will depend on this repository,
-  so the opposite dependency makes a cycle. Only the storybook reads the PlasmaZones checkout.
+  so the opposite dependency makes a cycle. Only the storybook builds the phosphor libraries.
 - **`Phosphor.Design` does not import `QtQuick.Controls`.** Controls loads the style, and the style imports
   `Phosphor.Design`. Thus that import is a loop. For a button in a component, use `QtQuick.Templates`.
 - **Use only tokens.** A component reads `Theme`, `Metrics` and `Motion`. It contains no color, radius, font size,
@@ -37,9 +37,9 @@ This file contains the rules that a session gets wrong. The skills contain the p
   Render the stories that a change affects, in the two schemes (`dl-verify-render`). A render shows one frame and
   cannot show motion. Tell the user when motion is not verified. Run the tests before you complete a change. They
   render each story in the two schemes, and CI runs the same tests.
-- **Change PlasmaZones only through its own pull request.** The storybook builds libraries from `../PlasmaZones`.
-  Do not edit that checkout from a session here. If a shipped component needs a change, tell the user the change
-  and the reason.
+- **Change a different repository only through its own pull request.** The storybook builds libraries from
+  phosphor-libs and phosphor-shell-libs. Do not edit a checkout of those repositories or of PlasmaZones from a
+  session here. If a shipped component needs a change, tell the user the change and the reason.
 - **Do not install, and do not use `sudo`.** Do not run an install target. Do not install system packages. Tell
   the user what is necessary and why. The one exception is `cmake --install` into a temporary directory, to check
   the install layout.
@@ -59,8 +59,8 @@ The Foundations stories contain the full guide. Review a component against these
 
 - **Color shows a state.** A surface is dark and does not move. Use color only for focus, selection, activity or
   an error. The accent is one of the four brand colors. Cyan always shows focus (`FocusRing`, the focused window,
-  a cursor). Rose shows an error, a destructive action or an unread item. Use the spectrum only on the edge of
-  `ShellBody` and in the logos.
+  a cursor). Rose shows an error, a destructive action or an unread item. Use the spectrum only in `Visualizer`,
+  on the edge of `ShellBody` and in the logos.
 - **An accent fill uses `Theme.ink`.** When a small control is on, its fill is the accent. The current row of a
   list has the `Theme.selected` tint and keeps `Theme.text`.
 - **Space is one ramp.** Each gap, inset and margin is a step of `Metrics.spaceRamp`. Use the name when a name
@@ -68,11 +68,21 @@ The Foundations stories contain the full guide. Review a component against these
   Related items are near each other. Use space between groups. Use a line only between rows in one card.
 - **There are six text sizes and two weights.** The sizes are `textCaption`, `textLabel`, `textBody`, `textRow`,
   `textHeading` and `textTitle`. The weights are 500 and 600. Use sentence case. Do not use uppercase labels or
-  letter spacing.
+  letter spacing. `textDisplay` is a seventh size, and only the clock of the lock screen uses it.
 - **The states are a fixed set.** Hover is `Theme.hover`. Pressed is `Metrics.pressScale` and not a color. Focus
   is `FocusRing`. On is the accent with ink. Current is `Theme.selected`. Disabled is `Theme.disabled`.
 - **A panel opens from its control.** A shell panel opens from the control that the user pressed, and closes into
   it. Use `ShellBody`. Do not use a popup next to the bar.
+- **A detail is a page of the same panel.** A Wi-Fi list and the menu of a tray app are pages (`PanelPage`) of the
+  panel that the user opened. The details of a resource are an open row. The panel changes size. A second popup
+  does not open.
+- **A panel has one header or none.** The header (`PanelHeader`) is the name of the page and its main control. A
+  first page that needs no name has no header. Do not write a line above the name or a sentence below it.
+- **Empty is a state.** Show it with one dim icon in the position of the content. Do not write a sentence.
+- **A change shows immediately, and a bar applies it.** In the settings app, the interface is the preview. A bar
+  with "Discard" and "Apply" appears while there is a change. Do not write a sentence in that bar.
+- **A palette replaces roles, not components.** A preset or a wallpaper sets `Theme.palette` with the role names of
+  matugen. A component reads only `Theme`, so it needs no change for a new palette.
 - **Springs move, fades color.** A position, a size, a radius or a scale moves on `SnapSpring`, `FlowSpring` or
   `TrailSpring`. A color uses `Tint`, and an opacity uses `Fade`. Do not use a `NumberAnimation` with a duration on
   geometry.
@@ -121,7 +131,8 @@ The Foundations stories contain the full guide. Review a component against these
 | Configure, build and test with only Qt | `cmake --workflow --preset standalone` |
 | Run the tests again | `ctest --preset standalone` |
 | Configure the library only | `cmake --preset standalone` |
-| Configure with the PlasmaZones checkout | `cmake --preset dev` |
+| Configure with the pinned phosphor libraries | `cmake --preset dev` |
+| Configure with the checkouts next to this repository | `cmake --preset local` |
 | Build | `systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 cmake --build --preset dev --parallel 6` |
 | Run | `build/storybook/phosphor-storybook` |
 | List the stories | `build/storybook/phosphor-storybook --list` |
@@ -146,10 +157,13 @@ The `dl-build` skill gives the details. The `standalone` preset builds in second
 | Storybook host | `storybook/main.cpp` (the window, the reload, `--shot`), `storybook/session.*` (the data that a reload keeps) |
 | Storybook QML | `storybook/qml/Main.qml`, and `storybook/qml/Phosphor/Storybook/` (`Story`, `Variant`, `Doc`, `Spec`, `DoDont`) |
 | Stories | `storybook/stories/NN-Group/Name.qml`. The directory is the group and the file is the story |
+| Shell surfaces | `storybook/qml/Phosphor/Storybook/Shell/`: each panel, dialog and screen of the shell, made from `Phosphor.Design` with sample data. They are reference designs. The shell libraries make the real surfaces. `storybook/stories/03-Shell/` shows each state, and the Desktop story puts the panels on one bar |
+| App windows | `storybook/qml/Phosphor/Storybook/Apps/`: the settings app and the terminal as reference designs in `WindowFrame`. `storybook/stories/04-Apps/` shows them. The settings window changes the real theme of the storybook |
+| Sample pictures | `storybook/assets/`: small covers that a script drew from the brand colors |
 | Stories of shipped components | `storybook/stories-phosphor/`. Only the `dev` preset builds them |
 | Tests | `storybook/tests/render_stories.py` renders each story. `CMakeLists.txt` and `storybook/CMakeLists.txt` register the tests |
 | CI | `.github/workflows/ci.yml`, with its packages in `.github/ci/arch-packages.txt` |
-| The checkout | `cmake/DesignPhosphor.cmake` adds the phosphor libraries in dependency sequence |
+| The phosphor libraries | `cmake/DesignDependencies.cmake` pins one commit of phosphor-libs and one of phosphor-shell-libs. `cmake/DesignPhosphor.cmake` adds the libraries in dependency sequence |
 | Browser mockup | `mockup/index.html`: the first sketch of this language, kept for reference. The QML is the authority |
 
 ## Skills and agents
@@ -158,7 +172,7 @@ The skills are in `.claude/skills/`.
 
 | Skill | Contents |
 | --- | --- |
-| `dl-build` | The two presets, the PlasmaZones checkout, how to use a branch of it, the memory limit |
+| `dl-build` | The three presets, the pinned phosphor libraries, how to use a branch of them, the memory limit |
 | `dl-add-component` | The files that a component changes: the QML, the `qmldir`, the story |
 | `dl-verify-render` | How to render a story without a display, what to render, what a render cannot show |
 | `dl-write` | The writing rules (ASD-STE100 principles) and the checker |
@@ -197,5 +211,9 @@ build and does not edit.
 - `PhosphorMotionAnimation`, in phosphor-animation, installs a spring as a Bézier approximation with a fixed
   duration on a property animation. Its header tells this. This library uses `SpringAnimation`, because a spring
   here must accept a new target during a move.
+- The user reported that stories stopped the window for seconds. No story was slow: each opens in less than one
+  second. A different build used all the processors, and a story loaded in one step on the interface thread. The
+  canvas now loads a story in parts (`asynchronous`), and `--tour` measures each story in one window. When the user
+  reports a slow interface, read `uptime` before you look for a slow component.
 - `icon` is a final property of the Qt Quick Controls button template. A component that is a `T.AbstractButton`
   and declares `property string icon` does not load. Use a different name, for example `iconName`.

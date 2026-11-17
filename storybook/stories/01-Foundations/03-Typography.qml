@@ -9,10 +9,10 @@ Doc {
     id: doc
 
     // The scale, from Metrics: name, size, line height, weight, sample, use.
-    readonly property var scale: [["Title", Metrics.textTitle, Metrics.lineTitle, Metrics.weightStrong, "Tiling", "The name of a page. Use one title in a window."], ["Heading", Metrics.textHeading, Metrics.lineHeading, Metrics.weightStrong, "Home network", "The name of the item that a surface shows."], ["Row", Metrics.textRow, Metrics.lineRow, Metrics.weightBody, "Studio 5G", "Text that the user reads to make a choice: list rows, text fields."], ["Body", Metrics.textBody, Metrics.lineBody, Metrics.weightBody, "Master ratio", "The default size: settings, messages, and buttons at weight 600."], ["Label", Metrics.textLabel, Metrics.lineLabel, Metrics.weightStrong, "Comfortable", "Inside a compact control: a segment, a tab, a key."], ["Caption", Metrics.textCaption, Metrics.lineCaption, Metrics.weightBody, "18m", "A time stamp or a count. This is the smallest text."]]
+    readonly property var scale: [["Display", Metrics.textDisplay, Metrics.lineDisplay, Metrics.weightBody, "10:24", "The clock of the lock screen. No other text uses this size."], ["Title", Metrics.textTitle, Metrics.lineTitle, Metrics.weightStrong, "Tiling", "The name of a page. Use one title in a window."], ["Heading", Metrics.textHeading, Metrics.lineHeading, Metrics.weightStrong, "Home network", "The name of the item that a surface shows."], ["Row", Metrics.textRow, Metrics.lineRow, Metrics.weightBody, "Studio 5G", "Text that the user reads to make a choice: list rows, text fields."], ["Body", Metrics.textBody, Metrics.lineBody, Metrics.weightBody, "Master ratio", "The default size: settings, messages, and buttons at weight 600."], ["Label", Metrics.textLabel, Metrics.lineLabel, Metrics.weightStrong, "Comfortable", "Inside a compact control: a segment, a tab, a key."], ["Caption", Metrics.textCaption, Metrics.lineCaption, Metrics.weightBody, "18m", "A time stamp or a count. This is the smallest text."]]
 
     Para {
-        text: "There are six text sizes and two weights. Do not use a size that is not in the scale."
+        text: "There are six text sizes and two weights. Do not use a size that is not in the scale. The display size is a seventh size, and only the clock of the lock screen uses it."
     }
 
     Heading {
@@ -89,7 +89,7 @@ Doc {
                     Text {
                         id: sample
 
-                        width: 220
+                        width: 250
                         text: step.modelData[4]
                         color: Theme.text
                         font.family: Metrics.fontUi
