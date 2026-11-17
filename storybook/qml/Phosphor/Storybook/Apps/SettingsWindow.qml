@@ -21,49 +21,84 @@ WindowFrame {
     property var saved: root._defaults
     property var draft: root._defaults
     readonly property bool dirty: JSON.stringify(saved) !== JSON.stringify(draft)
+    // Changes that the window starts with, as if the user made them. A story uses this to show a
+    // state.
+    property var start: ({})
+    // False keeps a change in this window. The window then does not change the theme of the
+    // interface around it.
+    property bool live: true
 
+    // The presets of phosphor-theme (AppearanceStore::presetValues and ShellPalette::fromSettings in
+    // phosphor-shell-libs). A preset is a palette and a small number of settings. The grounds, the
+    // text colors and the four stops are the values of that library. It has three grounds, so
+    // the field and the track here are steps from its card color. Phosphor keeps the brand palette
+    // of this repository.
     readonly property var presets: [
         {
             "id": "phosphor",
             "name": "Phosphor",
-            "scheme": "dark",
-            "accent": "blue",
+            "values": {
+                "scheme": "dark",
+                "accent": "blue",
+                "corners": 16,
+                "density": "comfortable",
+                "edge": "top",
+                "media": true,
+                "glow": true
+            },
             "palette": ({})
-        },
-        {
-            "id": "ember",
-            "name": "Ember",
-            "scheme": "dark",
-            "accent": "rose",
-            "palette": {
-                "background": "#120A07",
-                "surface_container_low": "#160C08",
-                "surface_container_highest": "#3A2418",
-                "on_primary": "#1A0F0A",
-                "surface_container": "#1A0F0A",
-                "surface": "#23150E",
-                "surface_container_high": "#2D1B12",
-                "primary": "#FB923C",
-                "on_surface": "#FFEDE0",
-                "on_surface_variant": "#BFA594"
-            }
         },
         {
             "id": "paper",
             "name": "Paper",
-            "scheme": "light",
-            "accent": "blue",
+            "values": {
+                "scheme": "light",
+                "corners": 24,
+                "glow": false
+            },
             "palette": {
-                "background": "#E7E1D3",
-                "surface_container_low": "#EFE9DC",
-                "surface_container_highest": "#DDD5C3",
-                "on_primary": "#FFFCF5",
-                "surface_container": "#F5F0E4",
-                "surface": "#FFFCF5",
-                "surface_container_high": "#EAE3D3",
-                "primary": "#9A5B13",
-                "on_surface": "#2A241A",
-                "on_surface_variant": "#6E6453"
+                "background": "#e1e8f4",
+                "surface_container_low": "#e1e8f4",
+                "surface_container": "#eef2fa",
+                "surface": "#dce3ef",
+                "surface_container_high": "#d0d9e8",
+                "surface_container_highest": "#c3cee0",
+                "on_surface": "#172740",
+                "on_surface_variant": "#4d607a",
+                "primary": "#49739d",
+                "on_primary": "#eef2fa",
+                "brand_stop_0": "#49739d",
+                "brand_stop_1": "#6c63aa",
+                "brand_stop_2": "#a2577d",
+                "brand_stop_3": "#955a39"
+            }
+        },
+        {
+            "id": "ember",
+            "name": "Ember",
+            "values": {
+                "scheme": "dark",
+                "corners": 8,
+                "density": "compact",
+                "edge": "bottom",
+                "media": false,
+                "glow": false
+            },
+            "palette": {
+                "background": "#1c1e1b",
+                "surface_container_low": "#1c1e1b",
+                "surface_container": "#272620",
+                "surface": "#403c32",
+                "surface_container_high": "#4d483c",
+                "surface_container_highest": "#5a5446",
+                "on_surface": "#eee9dc",
+                "on_surface_variant": "#b6b1a4",
+                "primary": "#e8c988",
+                "on_primary": "#1c1e1b",
+                "brand_stop_0": "#e8c988",
+                "brand_stop_1": "#d4b08a",
+                "brand_stop_2": "#d3906c",
+                "brand_stop_3": "#d27b83"
             }
         }
     ]
@@ -91,6 +126,7 @@ WindowFrame {
             "accent": "blue",
             "corners": 16,
             "density": "comfortable",
+            "glow": true,
             "wallpaper": "Soft orbit",
             "fit": "fill",
             "follow": false,
@@ -104,28 +140,30 @@ WindowFrame {
     // The style values start from the toolbar of the storybook. They are read one time: a binding
     // to them would put back the saved values after each change.
     Component.onCompleted: {
-        const start = Object.assign({}, _defaults);
-        for (const key of ["scheme", "accent", "corners", "density"])
-            start[key] = Session.globals[key];
-        saved = start;
-        draft = start;
+        const first = Object.assign({}, _defaults);
+        for (const key of ["scheme", "accent", "corners", "density", "glow"])
+            first[key] = Session.globals[key];
+        saved = first;
+        draft = first;
+        for (const key in start)
+            set(key, start[key]);
     }
 
     // Changes one value of the draft and shows it in the interface.
     function set(key: string, value: var) {
         const next = Object.assign({}, draft);
         next[key] = value;
-        if (key === "preset") {
-            const preset = presets.find(entry => entry.id === value);
-            next.scheme = preset.scheme;
-            next.accent = preset.accent;
-        }
+        // A preset also sets the values that are a part of it.
+        if (key === "preset")
+            Object.assign(next, presets.find(entry => entry.id === value).values);
         draft = next;
         _show(draft);
     }
 
     function _show(values: var) {
-        for (const key of ["scheme", "accent", "corners", "density"])
+        if (!live)
+            return;
+        for (const key of ["scheme", "accent", "corners", "density", "glow"])
             Session.setGlobal(key, values[key]);
         Theme.palette = presets.find(entry => entry.id === values.preset).palette;
     }
@@ -590,6 +628,7 @@ WindowFrame {
                         key: "visualizer"
                         label: "Visualizer"
                         enabled: root.draft.media
+                        opacity: enabled ? 1 : Theme.disabled
                         options: [
                             {
                                 "value": "bars",

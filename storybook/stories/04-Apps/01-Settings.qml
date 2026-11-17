@@ -18,7 +18,9 @@ Story {
 
         SettingsWindow {
             page: "wallpaper"
-            Component.onCompleted: set("wallpaper", "After hours")
+            start: ({
+                    "wallpaper": "After hours"
+                })
         }
     }
 
@@ -36,6 +38,18 @@ Story {
 
         SettingsWindow {
             page: "presets"
+        }
+    }
+
+    Variant {
+        name: "Bar, after the Ember preset: the bottom edge, no media"
+
+        SettingsWindow {
+            page: "bar"
+            live: false
+            start: ({
+                    "preset": "ember"
+                })
         }
     }
 }

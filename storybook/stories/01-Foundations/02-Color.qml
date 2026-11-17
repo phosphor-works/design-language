@@ -174,7 +174,7 @@ Doc {
         }
     }
     Para {
-        text: "A preset or a wallpaper can replace the palette. It sets Theme.palette with the role names of matugen: background, surface_container_low, surface_container, surface, surface_container_high, surface_container_highest, primary, on_primary, on_surface and on_surface_variant. A role that the palette does not contain keeps the brand value. The Settings story has two presets."
+        text: "A preset or a wallpaper can replace the palette. It sets Theme.palette with the role names of matugen: background, surface_container_low, surface_container, surface, surface_container_high, surface_container_highest, primary, on_primary, on_surface and on_surface_variant. The roles brand_stop_0 to brand_stop_3 replace the spectrum. A role that the palette does not contain keeps the brand value. The Settings story has the Paper preset and the Ember preset of phosphor-theme."
     }
     Para {
         text: "The spectrum is the gradient of the four brand colors. The spectrum is the brand and does not show a state. Use it only on the edge of the shell body, in the visualizer of the sound and in the logos."

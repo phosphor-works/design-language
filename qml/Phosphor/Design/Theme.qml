@@ -82,7 +82,7 @@ QtObject {
 
     // The spectrum is the brand and does not show a state. Use it only on the edge of the shell
     // body and in the logos. It is the same in the two schemes.
-    readonly property list<color> spectrum: ["#22D3EE", "#3B82F6", "#A855F7", "#F43F5E"]
+    readonly property list<color> spectrum: [_role("brand_stop_0", "#22D3EE"), _role("brand_stop_1", "#3B82F6"), _role("brand_stop_2", "#A855F7"), _role("brand_stop_3", "#F43F5E")]
 
     // ── Grounds, from the back forward ──────────────────────────────────────
     readonly property color desktop: _role("background", _now.desktop) // behind everything
