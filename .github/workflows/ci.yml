@@ -9,8 +9,8 @@
 #   * Lint: clang-format and qmlformat on the files that a change touches, and
 #     the REUSE license check on the full tree.
 #
-# The standalone preset uses only Qt. No job builds the stories of the
-# PlasmaZones checkout (the dev preset).
+# The standalone preset uses only Qt. No job builds the phosphor libraries and
+# their stories (the dev preset).
 
 name: CI
 

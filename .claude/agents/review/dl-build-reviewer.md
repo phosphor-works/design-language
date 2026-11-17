@@ -53,10 +53,10 @@ wrong edit.
 | --- | --- |
 | The library | The build compiles no file from `qml/`. The library installs with `install(DIRECTORY qml/Phosphor ...)`. A `.qml` or `qmldir` file that the pattern does not match does not install |
 | The storybook | It loads the QML from the source tree through `STORYBOOK_SOURCE_DIR`. It does not install |
-| The dependency direction | The library depends only on Qt. Only the storybook reads the PlasmaZones checkout, and only when `PHOSPHOR_DESIGN_WITH_PHOSPHOR` is on. A phosphor target in a different target is a finding |
-| The checkout | `cmake/DesignPhosphor.cmake` adds libraries from `PHOSPHOR_DESIGN_PHOSPHOR_DIR` in dependency sequence, with `EXCLUDE_FROM_ALL`, `BUILD_TESTING` off, and a macro that stops their `install()` rules. A new library must be in the list after its dependencies. Its QML module target and its plugin target must be in `design_link_phosphor` |
+| The dependency direction | The library depends only on Qt. Only the storybook builds the phosphor libraries, and only when `PHOSPHOR_DESIGN_WITH_PHOSPHOR` is on. A phosphor target in a different target is a finding |
+| The phosphor libraries | `cmake/DesignDependencies.cmake` pins phosphor-libs and phosphor-shell-libs by commit, URL and SHA-256. The phosphor-libs commit must be the commit that the pinned phosphor-shell-libs builds against. `cmake/DesignPhosphor.cmake` adds libraries from the two trees in dependency sequence, with `EXCLUDE_FROM_ALL`, `BUILD_TESTING` off, and a macro that stops their `install()` rules. A new library must be in the list after its dependencies. Its QML module target and its plugin target must be in `design_link_phosphor` |
 | Languages | `enable_language(C)` is necessary for the generated protocol sources of phosphor-wayland |
-| The presets | The two presets must configure. `standalone` must configure with no checkout |
+| The presets | The three presets must configure. `standalone` must configure with no network and no phosphor library. `local` needs the two checkouts next to this repository |
 
 ## The host
 

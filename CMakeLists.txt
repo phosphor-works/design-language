@@ -52,17 +52,12 @@ install(DIRECTORY qml/Phosphor
 # does not install.
 option(PHOSPHOR_DESIGN_BUILD_STORYBOOK "Build phosphor-storybook, which shows every component in each of its states" ON)
 
-# Stories for the components that the PlasmaZones tree ships (Phosphor.Theme, Phosphor.Widgets).
-# Only the storybook reads that checkout.
-set(PHOSPHOR_DESIGN_PHOSPHOR_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../PlasmaZones"
-    CACHE PATH "Path to a PlasmaZones checkout, for the stories of the components that ship there")
-set(_phosphor_design_have_checkout OFF)
-if(IS_DIRECTORY "${PHOSPHOR_DESIGN_PHOSPHOR_DIR}/phosphor-libs/libs")
-    set(_phosphor_design_have_checkout ON)
-endif()
+# Stories for the components that the phosphor libraries ship (Phosphor.Theme, Phosphor.Widgets).
+# Only the storybook builds those libraries. The first configure downloads the two commits that
+# cmake/DesignDependencies.cmake pins. The `dev` preset sets this option to ON.
 option(PHOSPHOR_DESIGN_WITH_PHOSPHOR
-       "Build the stories of the components in the PlasmaZones checkout (needs PHOSPHOR_DESIGN_PHOSPHOR_DIR)"
-       ${_phosphor_design_have_checkout})
+       "Build the stories of the components in phosphor-libs and phosphor-shell-libs, from the pinned commits"
+       OFF)
 
 if(PHOSPHOR_DESIGN_BUILD_STORYBOOK)
     find_package(Qt6 ${PHOSPHOR_DESIGN_QT_MIN} REQUIRED COMPONENTS Core Gui Qml Quick QuickControls2)
