@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2026 fuddlesworth
+# SPDX-License-Identifier: CC0-1.0
+#
+# Licenses for files that cannot carry an SPDX header. The library (qml/) is
+# LGPL-2.1-or-later and everything else GPL-3.0-or-later; see each file.
+
+version = 1
+
+[[annotations]]
+path = [".claude/settings.json", "CMakePresets.json"]
+SPDX-FileCopyrightText = "2026 fuddlesworth"
+SPDX-License-Identifier = "CC0-1.0"
