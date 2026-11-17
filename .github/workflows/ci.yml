@@ -73,10 +73,11 @@ jobs:
 
       # clang ships clang-format, qt6-declarative ships qmlformat. From the same
       # Arch packages that contributors use, because their output differs
-      # between major versions.
+      # between major versions. The qmlformat step calls diff, and the image
+      # does not contain diffutils.
       - name: Install the tools
         run: |
-          pacman -S --noconfirm --needed clang qt6-declarative reuse
+          pacman -S --noconfirm --needed clang diffutils qt6-declarative reuse
           clang-format --version
 
       - name: REUSE
