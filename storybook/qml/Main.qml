@@ -64,6 +64,11 @@ Rectangle {
         value: Session.globals.glow
     }
     Binding {
+        target: Theme
+        property: "material"
+        value: Session.globals.material
+    }
+    Binding {
         target: Metrics
         property: "corners"
         value: Session.globals.corners
@@ -210,6 +215,22 @@ Rectangle {
             Accessible.name: "Corners"
             ToolTip.visible: hovered
             ToolTip.text: "Corners " + value
+        }
+
+        Segmented {
+            label: "Material"
+            options: [
+                {
+                    "value": "glass",
+                    "text": "Glass"
+                },
+                {
+                    "value": "solid",
+                    "text": "Solid"
+                }
+            ]
+            value: Session.globals.material
+            onPicked: value => Session.setGlobal("material", value)
         }
 
         Segmented {

@@ -17,6 +17,9 @@ QtObject {
     property string scheme: "dark" // "dark" or "light"
     property string accentName: "blue" // "blue", "cyan", "purple" or "rose"
     property bool glow: true
+    // The material of the shell: "solid", or "glass". Glass lets a small part of the desktop show
+    // through the bar and its panels. The compositor adds the blur. A window of an app is solid.
+    property string material: "glass"
 
     // A palette with the role names of matugen (background, surface, primary, on_surface). A role
     // in this palette replaces the brand value. A palette from a wallpaper gets to each component
@@ -87,7 +90,9 @@ QtObject {
     // ── Grounds, from the back forward ──────────────────────────────────────
     readonly property color desktop: _role("background", _now.desktop) // behind everything
     readonly property color sidebar: _role("surface_container_low", _now.sidebar) // navigation columns
-    readonly property color surface: _role("surface_container", _now.surface) // the shell body, windows
+    readonly property color surface: _role("surface_container", _now.surface) // windows
+    readonly property real glassOpacity: 0.93
+    readonly property color shellSurface: tint(surface, material === "glass" ? glassOpacity : 1) // the shell body, panels
     readonly property color card: _role("surface", _now.card) // a group of rows on a window
     readonly property color field: _role("surface_container_high", _now.field) // fields, resting buttons
     readonly property color track: _role("surface_container_highest", _now.track) // the unlit part of a control

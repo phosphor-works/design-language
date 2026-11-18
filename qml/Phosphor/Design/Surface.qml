@@ -12,7 +12,7 @@ Rectangle {
     implicitWidth: slot.childrenRect.width + 2 * padding
     implicitHeight: slot.childrenRect.height + 2 * padding
     radius: Metrics.radiusSurface
-    color: Theme.surface
+    color: Theme.shellSurface
     border.width: Metrics.lineWidth
     border.color: Theme.line
 

@@ -49,6 +49,7 @@ Item {
     property real _w: 0
     property real _h: 0
     property bool _jump: false
+    readonly property string _outline: _path(0)
 
     function pulse(amount: real) {
         glowFade.stop();
@@ -83,8 +84,8 @@ Item {
     }
 
     // The outline, clockwise from the top left of the bar. `inset` makes the outline smaller by the
-    // same distance on each side. The rim is the full shape in the spectrum, with the inset shape
-    // in the surface color above it.
+    // same distance on each side. The rim is the area between the outline and the inset outline.
+    // Thus the fill below the rim can be glass.
     function _path(inset: real): string {
         const arc = (r, sweep, x, y) => r > 0.05 ? `A${r} ${r} 0 0 ${sweep} ${x} ${y}` : `L${x} ${y}`;
         const convex = r => Math.max(0, r - inset);
@@ -213,7 +214,7 @@ Item {
             }
 
             PathSvg {
-                path: root._path(0)
+                path: root._outline
             }
         }
     }
@@ -224,10 +225,10 @@ Item {
 
         ShapePath {
             strokeColor: "transparent"
-            fillColor: Theme.surface
+            fillColor: Theme.shellSurface
 
             PathSvg {
-                path: root._path(0)
+                path: root._outline
             }
         }
 
@@ -239,6 +240,7 @@ Item {
             readonly property real strength: 0.38 + 0.6 * root.energy
 
             strokeColor: "transparent"
+            fillRule: ShapePath.OddEvenFill
             fillGradient: LinearGradient {
                 x1: root.bar.x
                 x2: root.bar.x + root.bar.width
@@ -264,16 +266,7 @@ Item {
             }
 
             PathSvg {
-                path: root._path(0)
-            }
-        }
-
-        ShapePath {
-            strokeColor: "transparent"
-            fillColor: Theme.surface
-
-            PathSvg {
-                path: root._path(Metrics.rimWidth)
+                path: root._outline + root._path(Metrics.rimWidth)
             }
         }
     }

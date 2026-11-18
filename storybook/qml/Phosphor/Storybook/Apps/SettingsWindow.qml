@@ -45,7 +45,8 @@ WindowFrame {
                 "density": "comfortable",
                 "edge": "top",
                 "media": true,
-                "glow": true
+                "glow": true,
+                "material": "glass"
             },
             "palette": ({})
         },
@@ -56,7 +57,8 @@ WindowFrame {
                 "scheme": "light",
                 "corners": 24,
                 "spread": 22,
-                "glow": false
+                "glow": false,
+                "material": "glass"
             },
             "palette": {
                 "background": "#e1e8f4",
@@ -85,7 +87,8 @@ WindowFrame {
                 "density": "compact",
                 "edge": "bottom",
                 "media": false,
-                "glow": false
+                "glow": false,
+                "material": "solid"
             },
             "palette": {
                 "background": "#1c1e1b",
@@ -131,6 +134,7 @@ WindowFrame {
             "spread": 10,
             "density": "comfortable",
             "glow": true,
+            "material": "glass",
             "wallpaper": "Soft orbit",
             "fit": "fill",
             "follow": false,
@@ -145,7 +149,7 @@ WindowFrame {
     // to them would put back the saved values after each change.
     Component.onCompleted: {
         const first = Object.assign({}, _defaults);
-        for (const key of ["scheme", "accent", "corners", "density", "glow"])
+        for (const key of ["scheme", "accent", "corners", "density", "glow", "material"])
             first[key] = Session.globals[key];
         saved = first;
         draft = first;
@@ -167,7 +171,7 @@ WindowFrame {
     function _show(values: var) {
         if (!live)
             return;
-        for (const key of ["scheme", "accent", "corners", "density", "glow"])
+        for (const key of ["scheme", "accent", "corners", "density", "glow", "material"])
             Session.setGlobal(key, values[key]);
         Metrics.spread = values.spread;
         Theme.palette = _palette(values);
@@ -427,6 +431,24 @@ WindowFrame {
                     SwatchPicker {
                         value: root.draft.accent
                         onPicked: value => root.set("accent", value)
+                    }
+                }
+                SettingRow {
+                    text: "Material"
+
+                    Choice {
+                        key: "material"
+                        label: "Material"
+                        options: [
+                            {
+                                "value": "glass",
+                                "text": "Glass"
+                            },
+                            {
+                                "value": "solid",
+                                "text": "Solid"
+                            }
+                        ]
                     }
                 }
             }

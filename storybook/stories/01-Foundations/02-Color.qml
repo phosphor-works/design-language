@@ -75,7 +75,11 @@ Doc {
     }
     Spec {
         columns: doc.table
-        rows: doc.rows(["desktop", "sidebar", "surface", "card", "field", "track"], ["The background of the screen. In the dark scheme, ink has the same value.", "The navigation column of a window.", "The shell body and the background of a window.", "A group of related rows on a window.", "A text field, and a button that the user does not touch.", "The part of a control that has no accent: a switch that is off, the empty part of a slider."])
+        rows: doc.rows(["desktop", "sidebar", "surface", "card", "field", "track"], ["The background of the screen. In the dark scheme, ink has the same value.", "The navigation column of a window.", "The background of a window, and the color of the shell body.", "A group of related rows on a window.", "A text field, and a button that the user does not touch.", "The part of a control that has no accent: a switch that is off, the empty part of a slider."])
+    }
+
+    Para {
+        text: "The shell has a material: glass or solid. The shell body and each panel use Theme.shellSurface, which is the surface color with that material. With glass, a small part of the desktop shows through, and the compositor adds the blur. A window of an app is always solid."
     }
 
     Heading {

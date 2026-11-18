@@ -15,7 +15,7 @@ Rectangle {
     width: _panel ? _panel.width : 0
     height: _panel ? Math.max(_panel.implicitHeight, _panel.height) : 0
     radius: Metrics.radiusSurface
-    color: Theme.surface
+    color: Theme.shellSurface
     border.width: Metrics.lineWidth
     border.color: Theme.line
     clip: true

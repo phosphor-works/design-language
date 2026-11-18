@@ -83,6 +83,9 @@ The Foundations stories contain the full guide. Review a component against these
   with "Discard" and "Apply" appears while there is a change. Do not write a sentence in that bar.
 - **A palette replaces roles, not components.** A preset or a wallpaper sets `Theme.palette` with the role names of
   matugen. A component reads only `Theme`, so it needs no change for a new palette.
+- **The shell has a material.** A surface of the shell uses `Theme.shellSurface`, which is glass or solid
+  (`Theme.material`). A window of an app uses `Theme.surface` and is always solid. Do not put an opacity on a
+  surface in a component.
 - **Springs move, fades color.** A position, a size, a radius or a scale moves on `SnapSpring`, `FlowSpring` or
   `TrailSpring`. A color uses `Tint`, and an opacity uses `Fade`. Do not use a `NumberAnimation` with a duration on
   geometry.
