@@ -1,25 +1,20 @@
 # SPDX-FileCopyrightText: 2026 fuddlesworth
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Adds the components that the PlasmaZones tree ships to the storybook, so that the user can compare
-# them with the components of this repository.
+# Adds the components that the phosphor libraries ship to the storybook, so that the user can
+# compare them with the components of this repository.
 #
 # Only the storybook uses this file. The library (qml/) must not depend on a phosphor library,
-# because phosphor-libs will depend on the library.
+# because the phosphor libraries will depend on the library.
 #
-# Until phosphor-libs has its own repository, this file reads a PlasmaZones checkout next to this
-# repository. Afterglow uses the same method. To show a branch that is not merged, set
-# PHOSPHOR_DESIGN_PHOSPHOR_DIR to a different checkout or worktree.
+# The libraries come from the two commits that cmake/DesignDependencies.cmake pins: one of
+# phosphor-libs and one of phosphor-shell-libs. That file tells how to build a local checkout in
+# place of a pin, for example to show a branch that is not merged.
 
-set(_design_phosphor_dir "${PHOSPHOR_DESIGN_PHOSPHOR_DIR}")
+include("${CMAKE_CURRENT_LIST_DIR}/DesignDependencies.cmake")
 
-foreach(tier phosphor-libs phosphor-shell-libs)
-    if(NOT IS_DIRECTORY "${_design_phosphor_dir}/${tier}/libs")
-        message(FATAL_ERROR
-            "${_design_phosphor_dir} has no ${tier}/libs. Set -DPHOSPHOR_DESIGN_PHOSPHOR_DIR=/path/to/PlasmaZones, "
-            "or turn PHOSPHOR_DESIGN_WITH_PHOSPHOR off to build the library's own stories alone.")
-    endif()
-endforeach()
+design_fetch_dependency(phosphor-libs)
+design_fetch_dependency(phosphor-shell-libs)
 
 # The install rules of the phosphor libraries are for a system install of phosphor. This build
 # installs none of their files.
@@ -29,28 +24,33 @@ macro(install)
     endif()
 endmacro()
 
-# Adds the libraries of one tier in the given sequence. A library that calls find_package() for a
-# different library uses the target in this build only if that target exists. Thus the sequence is
-# the dependency sequence.
-function(design_add_phosphor_libs tier)
+# Adds libraries of one repository in the given sequence. A library that calls find_package() for
+# a different library uses the target in this build only if that target exists. Thus the sequence
+# is the dependency sequence.
+function(design_add_phosphor_libs repository)
     # The test suites of the phosphor libraries are not part of this build.
     set(BUILD_TESTING OFF)
     set(PHOSPHOR_DESIGN_INSIDE_PHOSPHOR ON)
+    set(tree "${${repository}_SOURCE_DIR}")
     foreach(lib IN LISTS ARGN)
-        if(NOT EXISTS "${_design_phosphor_dir}/${tier}/libs/${lib}/CMakeLists.txt")
+        if(NOT EXISTS "${tree}/libs/${lib}/CMakeLists.txt")
             message(FATAL_ERROR
-                "${_design_phosphor_dir}/${tier} has no ${lib}. This PlasmaZones checkout is older than the storybook expects.")
+                "${tree} has no ${lib}. This ${repository} tree is older than the commit that "
+                "cmake/DesignDependencies.cmake pins.")
         endif()
-        add_subdirectory("${_design_phosphor_dir}/${tier}/libs/${lib}"
-                         "${CMAKE_BINARY_DIR}/phosphor/${lib}" EXCLUDE_FROM_ALL)
+        add_subdirectory("${tree}/libs/${lib}" "${CMAKE_BINARY_DIR}/phosphor/${lib}" EXCLUDE_FROM_ALL)
     endforeach()
 endfunction()
 
-# The pins of the archives that some libraries download. Include the module at the top scope,
-# because its list is a directory variable.
-if(EXISTS "${_design_phosphor_dir}/cmake/PhosphorDependencies.cmake")
-    include("${_design_phosphor_dir}/cmake/PhosphorDependencies.cmake")
+# The pins of the archives that some phosphor libraries download. Include the module at the top
+# scope, because its list is a directory variable. It loads no second CPM: DesignDependencies.cmake
+# loaded one.
+if(NOT EXISTS "${phosphor-libs_SOURCE_DIR}/cmake/PhosphorDependencies.cmake")
+    message(FATAL_ERROR
+        "${phosphor-libs_SOURCE_DIR}/cmake/PhosphorDependencies.cmake not found. This phosphor-libs tree is "
+        "older than the commit that cmake/DesignDependencies.cmake pins.")
 endif()
+include("${phosphor-libs_SOURCE_DIR}/cmake/PhosphorDependencies.cmake")
 
 # phosphor-wayland compiles generated Wayland protocol sources, and these are C. Without the C
 # language, CMake ignores them with no message, and the link fails.

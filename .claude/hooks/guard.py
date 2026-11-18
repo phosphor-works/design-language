@@ -6,7 +6,7 @@
 Claude Code passes the tool call as JSON on stdin. Exit code 2 blocks the call and shows stderr to Claude.
 
 The guard catches the plain form of a mistake that a session makes in good faith: `pkill`, `sudo`, `git add -A`,
-`git push origin main`, an install, an edit inside a build tree or inside the PlasmaZones checkout. It
+`git push origin main`, an install, an edit inside a build tree or inside the checkout of a different Phosphor repository. It
 is not a security boundary. A shell is too expressive for a list of command shapes to be complete, and a program
 that wants to get past the guard can write a script and run it. So the guard reads a command line simply, and a
 rule covers the spelling that a session types, not every spelling that the shell accepts. Do not add rules for
@@ -56,11 +56,12 @@ def main_checkout(repo):
     return os.path.dirname(common) if os.path.basename(common) == '.git' else repo
 
 
-# The Phosphor libraries are built from the checkout next to the main checkout of this repository, but they belong
-# to PlasmaZones, which changes only through its own branch and pull request. This file is .claude/hooks/guard.py,
-# so the repository is two directories up.
+# The checkouts next to the main checkout of this repository belong to other repositories. The storybook can
+# build the phosphor libraries from two of them (the `local` preset). Each changes only through its own branch and
+# pull request. This file is .claude/hooks/guard.py, so the repository is two directories up.
 REPOSITORY = main_checkout(os.path.realpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')))
-PLASMAZONES = os.path.realpath(os.path.join(REPOSITORY, '..', 'PlasmaZones')) + '/'
+SIBLINGS = tuple(os.path.realpath(os.path.join(REPOSITORY, '..', name)) + '/'
+                 for name in ('PlasmaZones', 'phosphor-libs', 'phosphor-shell-libs'))
 
 SEPARATORS = ';&|()\n`'
 # Words that run the command after them: skipped, with their options, to find the command itself
@@ -117,9 +118,9 @@ MSG_FAILED = ('The guard could not check this call ({}), so it blocks it. Write 
               'ask the user.')
 
 
-def plasmazones_message(path):
-    return (f'{path} is in PlasmaZones. The storybook builds components from that checkout, but PlasmaZones changes '
-            'only through its own branch and pull request. Tell the user what it needs and why.')
+def sibling_message(path):
+    return (f'{path} is in a different Phosphor repository. That repository changes only through its own branch '
+            'and pull request. Tell the user what it needs and why.')
 
 
 # Reading a command line
@@ -293,8 +294,8 @@ def check_git(args, cwd):
         directory = os.path.join(directory, os.path.expanduser(d))
     if sub in ('add', 'stage', 'commit', 'push', 'rm', 'mv', 'reset', 'checkout', 'switch', 'rebase', 'merge',
                'cherry-pick', 'revert', 'tag', 'restore', 'stash', 'apply', 'am'):
-        if (os.path.realpath(directory) + '/').startswith(PLASMAZONES):
-            return plasmazones_message(directory)
+        if (os.path.realpath(directory) + '/').startswith(SIBLINGS):
+            return sibling_message(directory)
     if sub in ('add', 'stage'):
         paths, broad, force = [], False, False
         for k, a in enumerate(rest):
@@ -409,8 +410,8 @@ def check_bash(command, cwd=None):
 
 def check_edit(path):
     real = os.path.realpath(path)
-    if real.startswith(PLASMAZONES):
-        return plasmazones_message(path)
+    if real.startswith(SIBLINGS):
+        return sibling_message(path)
     project = os.path.realpath(os.environ.get('CLAUDE_PROJECT_DIR', os.getcwd())) + '/'
     if not real.startswith(project):
         return None

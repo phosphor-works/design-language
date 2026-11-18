@@ -27,10 +27,14 @@ cmake --workflow --preset standalone
 That command configures into `build-standalone/`, builds the storybook and runs the tests. The tests render each
 story without a display, in the dark scheme and in the light scheme.
 
-The `dev` preset also builds the phosphor libraries from a PlasmaZones checkout at `../PlasmaZones`. The storybook
-then shows the components that ship there next to the components of this repository. When there is no checkout,
-the `dev` preset builds the same targets as the `standalone` preset. To use a different checkout, set
-`-DPHOSPHOR_DESIGN_PHOSPHOR_DIR=/path/to/PlasmaZones`.
+The `dev` preset also builds nine libraries from [phosphor-libs](https://github.com/phosphor-works/phosphor-libs)
+and [phosphor-shell-libs](https://github.com/phosphor-works/phosphor-shell-libs). The storybook then shows the
+components that ship there next to the components of this repository. The first configure downloads the two
+commits that `cmake/DesignDependencies.cmake` pins into `.cache/cpm`. This preset also needs
+extra-cmake-modules, Wayland and the private headers of Qt.
+
+The `local` preset builds the same libraries from the checkouts at `../phosphor-libs` and
+`../phosphor-shell-libs`. Use it to see a branch of those repositories in the storybook.
 
 ## The storybook
 

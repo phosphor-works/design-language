@@ -55,7 +55,7 @@ Story {
             title: "Screenshot"
             body: "Saved to Pictures"
             time: "now"
-            picture: true
+            picture: Qt.resolvedUrl("../../assets/cover-a-walk.jpg")
         }
     }
 

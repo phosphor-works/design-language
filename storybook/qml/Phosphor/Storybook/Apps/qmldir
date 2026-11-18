@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: 2026 fuddlesworth
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+module Phosphor.Storybook.Apps
+SettingsWindow 1.0 SettingsWindow.qml
+TerminalWindow 1.0 TerminalWindow.qml

@@ -78,11 +78,12 @@ that your change affects.
 | --- | --- |
 | Motion | A render is one frame after the story stops. It cannot show a spring, an overshoot, a stretch or a fade |
 | Hover, press and keyboard focus | No program moves the pointer or presses a key |
-| Blur | The offscreen platform can render without a GPU. The glow of `ShellBody` is a `MultiEffect` and can be absent |
+| Blur and round pictures | The offscreen platform renders without a GPU. The glow of `ShellBody` is a `MultiEffect` and is absent. `Artwork` then shows its picture with square corners. Render with the GPU to see them (see below) |
+| An icon behind a clip | The software renderer draws an icon that a clip hides. The scrolling strip of the Stage story shows such icons at its sides. A render with the GPU does not |
 | The correct fonts | `Metrics` uses a different font when Manrope and JetBrains Mono are not installed. The Typography page shows the fonts that it found |
 
 `Session.capture` is true during a capture. A story uses it to start in the state that the capture must show. For
-example, the Shell body story opens its drawer. That shows the end of a move, not the move.
+example, the Desktop story opens its drawer. That shows the end of a move, not the move.
 
 When a change affects motion or interaction, tell the user that the render does not show it. Then ask the user to
 examine it in the storybook at the quarter speed. Do not report motion as verified from one frame.
@@ -100,6 +101,37 @@ QT_QPA_PLATFORM=offscreen QT_FORCE_STDERR_LOGGING=1 qml6 -I "$PWD/qml" \
 
 For `flow` (omega 18, zeta 0.8), the correct values are approximately 231 ms and a peak of 1015. The comment at the
 top of the probe gives the formulas. Run the probe after each change to `Motion.qml` or to a spring wrapper.
+
+## Measure how long a story takes to open
+
+A render starts a new process for each story. Thus it cannot show that a story is slow to open in a window that
+already shows a different story. The tour opens each story in one window and prints three times for it.
+
+```sh
+build-standalone/storybook/phosphor-storybook --tour 700
+```
+
+| Column | Meaning |
+| --- | --- |
+| `load` | The time until the story exists. The window of the user loads a story in parts, so this is work and not a stop |
+| `frame` | The time until the window shows the first frame of the story |
+| `stall` | The longest time that the window did not respond while the story was open |
+
+The tour needs no display. Without a display, Qt Quick uses the software renderer, which has no effects and no
+GPU. To measure with the GPU, and to render a `MultiEffect`, run the storybook in a compositor that has no screen:
+
+```sh
+env -u WAYLAND_DISPLAY -u DISPLAY WLR_BACKENDS=headless WLR_LIBINPUT_NO_DEVICES=1 cage -- \
+    env -u QT_WAYLAND_SHELL_INTEGRATION QT_QPA_PLATFORM=wayland \
+    build-standalone/storybook/phosphor-storybook --tour 700
+```
+
+The same command with `--story ID --shot "$PWD/shots/ID.png"` renders one story with the GPU. Use an absolute path
+for the file.
+
+Before you compare times, read the load of the computer with `uptime`. A different build on the same computer
+makes each time longer. On a computer with eight processors and a load of 50, a story that opens in 0.3 seconds
+stopped the window for seconds.
 
 ## A reload is not a restart
 

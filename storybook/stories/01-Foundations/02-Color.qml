@@ -75,7 +75,11 @@ Doc {
     }
     Spec {
         columns: doc.table
-        rows: doc.rows(["desktop", "sidebar", "surface", "card", "field", "track"], ["The background of the screen. In the dark scheme, ink has the same value.", "The navigation column of a window.", "The shell body and the background of a window.", "A group of related rows on a window.", "A text field, and a button that the user does not touch.", "The part of a control that has no accent: a switch that is off, the empty part of a slider."])
+        rows: doc.rows(["desktop", "sidebar", "surface", "card", "field", "track"], ["The background of the screen. In the dark scheme, ink has the same value.", "The navigation column of a window.", "The background of a window, and the color of the shell body.", "A group of related rows on a window.", "A text field, and a button that the user does not touch.", "The part of a control that has no accent: a switch that is off, the empty part of a slider."])
+    }
+
+    Para {
+        text: "The shell has a material: glass or solid. The shell body and each panel use Theme.shellSurface, which is the surface color with that material. With glass, a small part of the desktop shows through, and the compositor adds the blur. A window of an app is always solid."
     }
 
     Heading {
@@ -174,7 +178,10 @@ Doc {
         }
     }
     Para {
-        text: "The spectrum is the gradient of the four brand colors. The spectrum is the brand and does not show a state. Use it only on the edge of the shell body and in the logos."
+        text: "A preset or a wallpaper can replace the palette. It sets Theme.palette with the role names of matugen: background, surface_container_low, surface_container, surface, surface_container_high, surface_container_highest, primary, on_primary, on_surface and on_surface_variant. The roles brand_stop_0 to brand_stop_3 replace the spectrum. A role that the palette does not contain keeps the brand value. The Settings story has the Paper preset and the Ember preset of phosphor-theme."
+    }
+    Para {
+        text: "The spectrum is the gradient of the four brand colors. The spectrum is the brand and does not show a state. Use it only on the edge of the shell body, in the visualizer of the sound and in the logos."
     }
     Para {
         text: "Do not use color as the only signal. A tile that is on is also rounder. A chosen row also has a check. An error also has an icon."

@@ -7,7 +7,7 @@ import Phosphor.Storybook
 import Phosphor.Widgets
 
 // The components that phosphor-shell-libs ships now, each next to its equivalent in this
-// repository. These are the real Phosphor.Widgets components from the PlasmaZones checkout. They
+// repository. These are the real Phosphor.Widgets components from the pinned phosphor-shell-libs commit. They
 // use their own Phosphor.Theme, so the toolbar above does not change them.
 Story {
     Variant {

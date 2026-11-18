@@ -16,7 +16,8 @@ Item {
     property string title
     property string body
     property string time
-    property bool picture: false
+    property url picture // a picture that the notification carries: a screenshot, a cover
+    readonly property bool _hasPicture: picture.toString() !== ""
     property int count: 1
     property bool expanded: false
     property bool flat: false
@@ -127,27 +128,13 @@ Item {
                     anchors.right: parent.right
                     spacing: Metrics.space10
 
-                    Rectangle {
-                        width: 40
-                        height: 40
+                    Artwork {
+                        size: 40
                         radius: Metrics.radiusInner + 2
-                        visible: root.picture && !root.expanded
-                        gradient: Gradient {
-                            orientation: Gradient.Horizontal
-
-                            GradientStop {
-                                position: 0
-                                color: Qt.tint(Theme.card, Theme.tint(Theme.cyan, 0.7))
-                            }
-                            GradientStop {
-                                position: 0.6
-                                color: Qt.tint(Theme.card, Theme.tint(Theme.purple, 0.7))
-                            }
-                            GradientStop {
-                                position: 1
-                                color: Qt.tint(Theme.card, Theme.tint(Theme.rose, 0.6))
-                            }
-                        }
+                        visible: root._hasPicture && !root.expanded
+                        source: root.picture
+                        icon: "image"
+                        tone: root.tone
                     }
 
                     // When the pointer is on the card, the dismiss button replaces the time.
@@ -199,27 +186,14 @@ Item {
                 }
             }
 
-            Rectangle {
+            Artwork {
                 width: parent.width
                 height: 128
                 radius: Metrics.radiusControl
-                visible: root.picture && root.expanded
-                gradient: Gradient {
-                    orientation: Gradient.Horizontal
-
-                    GradientStop {
-                        position: 0
-                        color: Qt.tint(Theme.card, Theme.tint(Theme.cyan, 0.7))
-                    }
-                    GradientStop {
-                        position: 0.6
-                        color: Qt.tint(Theme.card, Theme.tint(Theme.purple, 0.7))
-                    }
-                    GradientStop {
-                        position: 1
-                        color: Qt.tint(Theme.card, Theme.tint(Theme.rose, 0.6))
-                    }
-                }
+                visible: root._hasPicture && root.expanded
+                source: root.picture
+                icon: "image"
+                tone: root.tone
             }
 
             Row {

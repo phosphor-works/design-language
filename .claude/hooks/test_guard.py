@@ -63,9 +63,12 @@ class EditRules(unittest.TestCase):
     def test_build_tree(self):
         self.assertIsNotNone(guard.check_edit(str(REPO / 'build' / 'CMakeCache.txt')))
 
-    def test_plasmazones_checkout(self):
-        path = str(REPO.parent / 'PlasmaZones' / 'phosphor-shell-libs' / 'CMakeLists.txt')
-        self.assertIsNotNone(guard.check_edit(path))
+    def test_other_repositories(self):
+        for name in ('PlasmaZones', 'phosphor-libs', 'phosphor-shell-libs'):
+            path = str(REPO.parent / name / 'CMakeLists.txt')
+            self.assertIsNotNone(guard.check_edit(path), name)
+        # A repository with a name that starts with the name of a protected repository is not protected.
+        self.assertIsNone(guard.check_edit(str(REPO.parent / 'phosphor-libs-notes' / 'a.txt')))
 
     def test_sources(self):
         self.assertIsNone(guard.check_edit(str(REPO / 'qml' / 'Phosphor' / 'Design' / 'Tile.qml')))

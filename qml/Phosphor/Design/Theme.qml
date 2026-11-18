@@ -17,6 +17,9 @@ QtObject {
     property string scheme: "dark" // "dark" or "light"
     property string accentName: "blue" // "blue", "cyan", "purple" or "rose"
     property bool glow: true
+    // The material of the shell: "solid", or "glass". Glass lets a small part of the desktop show
+    // through the bar and its panels. The compositor adds the blur. A window of an app is solid.
+    property string material: "glass"
 
     // A palette with the role names of matugen (background, surface, primary, on_surface). A role
     // in this palette replaces the brand value. A palette from a wallpaper gets to each component
@@ -82,15 +85,17 @@ QtObject {
 
     // The spectrum is the brand and does not show a state. Use it only on the edge of the shell
     // body and in the logos. It is the same in the two schemes.
-    readonly property list<color> spectrum: ["#22D3EE", "#3B82F6", "#A855F7", "#F43F5E"]
+    readonly property list<color> spectrum: [_role("brand_stop_0", "#22D3EE"), _role("brand_stop_1", "#3B82F6"), _role("brand_stop_2", "#A855F7"), _role("brand_stop_3", "#F43F5E")]
 
     // ── Grounds, from the back forward ──────────────────────────────────────
     readonly property color desktop: _role("background", _now.desktop) // behind everything
-    readonly property color sidebar: _now.sidebar // navigation columns
-    readonly property color surface: _role("surface_container", _now.surface) // the shell body, windows
+    readonly property color sidebar: _role("surface_container_low", _now.sidebar) // navigation columns
+    readonly property color surface: _role("surface_container", _now.surface) // windows
+    readonly property real glassOpacity: 0.93
+    readonly property color shellSurface: tint(surface, material === "glass" ? glassOpacity : 1) // the shell body, panels
     readonly property color card: _role("surface", _now.card) // a group of rows on a window
     readonly property color field: _role("surface_container_high", _now.field) // fields, resting buttons
-    readonly property color track: _now.track // the unlit part of a control
+    readonly property color track: _role("surface_container_highest", _now.track) // the unlit part of a control
 
     // ── Roles ───────────────────────────────────────────────────────────────
     readonly property color accent: _role("primary", ({
@@ -106,7 +111,7 @@ QtObject {
 
     readonly property color text: _role("on_surface", _now.text) // names and values
     readonly property color muted: _role("on_surface_variant", _now.muted) // secondary values, idle icons
-    readonly property color ink: _now.ink // text and icons on a lit fill
+    readonly property color ink: _role("on_primary", _now.ink) // text and icons on a lit fill
 
     // ── States ──────────────────────────────────────────────────────────────
     readonly property color line: _now.line // a 1 px edge between two grounds

@@ -7,6 +7,7 @@
 #include <QCommandLineParser>
 #include <QDir>
 #include <QDirIterator>
+#include <QElapsedTimer>
 #include <QFileSystemWatcher>
 #include <QGuiApplication>
 #include <QImage>
@@ -60,7 +61,8 @@ int main(int argc, char* argv[])
     // arguments.
     for (int i = 1; i < argc; ++i) {
         const QByteArrayView argument(argv[i]);
-        if (argument == "--list" || argument == "--shot" || argument.startsWith("--shot=")) {
+        if (argument == "--list" || argument == "--shot" || argument.startsWith("--shot=") || argument == "--tour"
+            || argument.startsWith("--tour=")) {
             if (qEnvironmentVariableIsEmpty("QT_QPA_PLATFORM")) {
                 qputenv("QT_QPA_PLATFORM", "offscreen");
             }
@@ -88,7 +90,11 @@ int main(int argc, char* argv[])
                                        QStringLiteral("Set a toolbar value, as <key>=<value>. May repeat."),
                                        QStringLiteral("key=value"));
     const QCommandLineOption listOption(QStringLiteral("list"), QStringLiteral("Print the story ids and exit."));
-    parser.addOptions({shotOption, storyOption, sizeOption, waitOption, setOption, listOption});
+    const QCommandLineOption tourOption(
+        QStringLiteral("tour"),
+        QStringLiteral("Open each story for <ms> in one window, print how long each took to load, and exit."),
+        QStringLiteral("ms"));
+    parser.addOptions({shotOption, storyOption, sizeOption, waitOption, setOption, listOption, tourOption});
     parser.process(app);
 
     const QDir source(QStringLiteral(STORYBOOK_SOURCE_DIR));
@@ -204,8 +210,13 @@ int main(int argc, char* argv[])
         // An editor that replaces a file removes its watch, so set all watches again.
         rewatch();
     });
-    QObject::connect(&session, &Session::storyChanged, &session, &Session::save);
-    QObject::connect(&session, &Session::globalsChanged, &session, &Session::save);
+    // A tour selects each story. It must not change the story that the user sees at the next start.
+    const bool tour = parser.isSet(tourOption);
+    session.setBlocking(tour);
+    if (!tour) {
+        QObject::connect(&session, &Session::storyChanged, &session, &Session::save);
+        QObject::connect(&session, &Session::globalsChanged, &session, &Session::save);
+    }
 
     const bool loaded = load();
     view.show();
@@ -221,6 +232,66 @@ int main(int argc, char* argv[])
             // The host writes a capture of the error page, but the run is a failure.
             QCoreApplication::exit(saved && loaded ? 0 : 1);
         });
+    } else if (tour) {
+        // A render starts a new process for each story. Thus it cannot find a story that is slow to
+        // open in a window that already shows a different story. The tour opens each story in one
+        // window and measures three times for it.
+        // "Load" is the time until the story exists. "Frame" is the time until the window shows
+        // the first frame of the story. "Stall" is the longest time that the window did not
+        // respond while the story was open.
+        struct Tour
+        {
+            QStringList ids;
+            qsizetype next = 0;
+            QString current;
+            QElapsedTimer sinceSwitch;
+            QElapsedTimer sinceTick;
+            qint64 load = 0;
+            qint64 frame = -1;
+            qint64 stall = 0;
+        };
+        auto* state = new Tour;
+        const QVariantList stories = session.stories();
+        for (const QVariant& story : stories) {
+            state->ids.append(story.toMap().value(QStringLiteral("id")).toString());
+        }
+        auto* tick = new QTimer(&app);
+        tick->setInterval(5);
+        QObject::connect(tick, &QTimer::timeout, &app, [state]() {
+            state->stall = qMax(state->stall, state->sinceTick.restart());
+        });
+        QObject::connect(&view, &QQuickWindow::frameSwapped, &app, [state]() {
+            if (state->frame < 0) {
+                state->frame = state->sinceSwitch.elapsed();
+            }
+        });
+        auto* step = new QTimer(&app);
+        step->setInterval(qMax(50, parser.value(tourOption).toInt()));
+        const auto report = [state, &out]() {
+            if (!state->current.isEmpty()) {
+                out << qSetFieldWidth(6) << state->load << state->frame << state->stall << qSetFieldWidth(0) << "  "
+                    << state->current << '\n';
+                out.flush();
+            }
+        };
+        QObject::connect(step, &QTimer::timeout, &app, [state, tick, report, &session, loaded]() {
+            report();
+            if (state->next >= state->ids.size()) {
+                QCoreApplication::exit(loaded ? 0 : 1);
+                return;
+            }
+            state->current = state->ids.at(state->next++);
+            state->frame = -1;
+            state->stall = 0;
+            state->sinceSwitch.start();
+            session.setStory(state->current);
+            state->load = state->sinceSwitch.elapsed();
+            // The time of the load is not a stall of the open story.
+            state->sinceTick.start();
+            tick->start();
+        });
+        out << "  load frame stall  story (milliseconds)\n";
+        step->start();
     } else {
         rewatch();
     }

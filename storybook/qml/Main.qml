@@ -64,6 +64,11 @@ Rectangle {
         value: Session.globals.glow
     }
     Binding {
+        target: Theme
+        property: "material"
+        value: Session.globals.material
+    }
+    Binding {
         target: Metrics
         property: "corners"
         value: Session.globals.corners
@@ -213,6 +218,22 @@ Rectangle {
         }
 
         Segmented {
+            label: "Material"
+            options: [
+                {
+                    "value": "glass",
+                    "text": "Glass"
+                },
+                {
+                    "value": "solid",
+                    "text": "Solid"
+                }
+            ]
+            value: Session.globals.material
+            onPicked: value => Session.setGlobal("material", value)
+        }
+
+        Segmented {
             label: "Density"
             options: [
                 {
@@ -287,6 +308,15 @@ Rectangle {
             width: canvas.width
             height: fills ? canvas.height : item ? Math.max(item.implicitHeight, 1) : 0
             source: Session.storyUrl(Session.story)
+            // A large story takes time to make. The window continues to respond during that time.
+            asynchronous: !Session.blocking
+        }
+
+        Spinner {
+            anchors.horizontalCenter: parent.horizontalCenter
+            y: 96
+            size: 22
+            visible: loader.status === Loader.Loading
         }
 
         Label {

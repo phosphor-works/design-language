@@ -1,6 +1,10 @@
 {
     "version": 6,
-    "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 25,
+        "patch": 0
+    },
     "configurePresets": [
         {
             "name": "base",
@@ -14,47 +18,124 @@
         },
         {
             "name": "dev",
-            "displayName": "Development, with tests, and with the stories of the PlasmaZones checkout when it is there",
+            "displayName": "Development, with tests, and with the stories of the pinned phosphor libraries",
             "inherits": "base",
-            "binaryDir": "${sourceDir}/build"
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "PHOSPHOR_DESIGN_WITH_PHOSPHOR": "ON"
+            }
+        },
+        {
+            "name": "local",
+            "displayName": "As dev, with the phosphor-libs and phosphor-shell-libs checkouts next to this repository",
+            "inherits": "dev",
+            "binaryDir": "${sourceDir}/build-local",
+            "cacheVariables": {
+                "CPM_phosphor-libs_SOURCE": "${sourceDir}/../phosphor-libs",
+                "CPM_phosphor-shell-libs_SOURCE": "${sourceDir}/../phosphor-shell-libs"
+            }
         },
         {
             "name": "standalone",
-            "displayName": "Qt only, with tests: no PlasmaZones checkout, the library's own stories",
+            "displayName": "Qt only, with tests: no phosphor libraries, the library's own stories",
             "inherits": "base",
             "binaryDir": "${sourceDir}/build-standalone",
-            "cacheVariables": { "PHOSPHOR_DESIGN_WITH_PHOSPHOR": "OFF" }
+            "cacheVariables": {
+                "PHOSPHOR_DESIGN_WITH_PHOSPHOR": "OFF"
+            }
         }
     ],
     "buildPresets": [
-        { "name": "dev", "configurePreset": "dev" },
-        { "name": "standalone", "configurePreset": "standalone" }
+        {
+            "name": "dev",
+            "configurePreset": "dev"
+        },
+        {
+            "name": "local",
+            "configurePreset": "local"
+        },
+        {
+            "name": "standalone",
+            "configurePreset": "standalone"
+        }
     ],
     "testPresets": [
         {
             "name": "base",
             "hidden": true,
-            "output": { "outputOnFailure": true },
-            "execution": { "noTestsAction": "error" }
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error"
+            }
         },
-        { "name": "dev", "inherits": "base", "configurePreset": "dev" },
-        { "name": "standalone", "inherits": "base", "configurePreset": "standalone" }
+        {
+            "name": "dev",
+            "inherits": "base",
+            "configurePreset": "dev"
+        },
+        {
+            "name": "local",
+            "inherits": "base",
+            "configurePreset": "local"
+        },
+        {
+            "name": "standalone",
+            "inherits": "base",
+            "configurePreset": "standalone"
+        }
     ],
     "workflowPresets": [
         {
             "name": "dev",
             "steps": [
-                { "type": "configure", "name": "dev" },
-                { "type": "build", "name": "dev" },
-                { "type": "test", "name": "dev" }
+                {
+                    "type": "configure",
+                    "name": "dev"
+                },
+                {
+                    "type": "build",
+                    "name": "dev"
+                },
+                {
+                    "type": "test",
+                    "name": "dev"
+                }
+            ]
+        },
+        {
+            "name": "local",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "local"
+                },
+                {
+                    "type": "build",
+                    "name": "local"
+                },
+                {
+                    "type": "test",
+                    "name": "local"
+                }
             ]
         },
         {
             "name": "standalone",
             "steps": [
-                { "type": "configure", "name": "standalone" },
-                { "type": "build", "name": "standalone" },
-                { "type": "test", "name": "standalone" }
+                {
+                    "type": "configure",
+                    "name": "standalone"
+                },
+                {
+                    "type": "build",
+                    "name": "standalone"
+                },
+                {
+                    "type": "test",
+                    "name": "standalone"
+                }
             ]
         }
     ]

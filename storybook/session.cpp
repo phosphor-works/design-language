@@ -50,6 +50,7 @@ QVariantMap defaultGlobals()
         {QStringLiteral("motion"), QStringLiteral("fluid")},
         {QStringLiteral("slow"), 1},
         {QStringLiteral("glow"), true},
+        {QStringLiteral("material"), QStringLiteral("glass")},
     };
 }
 

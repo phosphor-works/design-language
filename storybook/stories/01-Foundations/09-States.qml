@@ -201,6 +201,9 @@ Doc {
         text: "A disabled control keeps its position and its size. If a control never applies, remove it."
     }
     Para {
+        text: "Empty is a state. Show it with one dim icon in the position of the content. For example, a bell shows that there are no notifications. Do not write a sentence that tells the user that there is nothing."
+    }
+    Para {
         text: "This page cannot show hover, because the pointer can be on only one control. Move the pointer across the examples to see hover."
     }
 }

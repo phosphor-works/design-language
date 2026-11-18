@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: 2026 fuddlesworth
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+module Phosphor.Storybook.Shell
+singleton SamplePlacement 1.0 SamplePlacement.qml
+AuthDialog 1.0 AuthDialog.qml
+CalendarPanel 1.0 CalendarPanel.qml
+InboxPanel 1.0 InboxPanel.qml
+LauncherPanel 1.0 LauncherPanel.qml
+LockScreen 1.0 LockScreen.qml
+MediaPanel 1.0 MediaPanel.qml
+OsdPanel 1.0 OsdPanel.qml
+OverviewPanel 1.0 OverviewPanel.qml
+PanelFrame 1.0 PanelFrame.qml
+PowerPanel 1.0 PowerPanel.qml
+QuickPanel 1.0 QuickPanel.qml
+ShortcutsSheet 1.0 ShortcutsSheet.qml
+Stage 1.0 Stage.qml
+StatsChip 1.0 StatsChip.qml
+StatsPanel 1.0 StatsPanel.qml
+TrayPanel 1.0 TrayPanel.qml
