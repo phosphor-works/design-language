@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: 2026 fuddlesworth -->
+<!-- SPDX-License-Identifier: LGPL-2.1-or-later -->
+
 # design-language
 
 The design language of the Phosphor suite. Its README gives the planned scope: color, type, space and motion tokens,
@@ -13,10 +16,9 @@ reviewers, the lesson index) comes from the `phosphor-works` plugin, which `.cla
 
 ## State
 
-- The only tracked file is `README.md`, from the initial commit. There is no source, no build, no CI and no tests.
-- There is no license yet: no `LICENSE`, no `LICENSES/` folder and no `REUSE.toml`. Ask the user which license to use
-  before the first file with an SPDX header lands. The conventions make a library `LGPL-2.1-or-later` and an app or
-  tool `GPL-3.0-or-later`.
+- The repository holds only `README.md`, its license and this file. There is no source, no build, no CI and no tests.
+- The license is `LGPL-2.1-or-later` (`COPYING.LESSER`), as for the suite's libraries: apps link the tokens,
+  the Qt Quick Controls style and the components. Every file that can hold a comment carries the SPDX header.
 - `workspace.repos` lists the repository, so `vcs import` clones it beside the others.
 
 When the first code lands, add its layout, its build and test commands and its CI to this file.
