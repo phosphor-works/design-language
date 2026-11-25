@@ -4,8 +4,8 @@ description: "Phosphor design language conformance reviewer. Use for audit parti
 ---
 
 <!--
-SPDX-FileCopyrightText: 2026 fuddlesworth
-SPDX-License-Identifier: GPL-3.0-or-later
+SPDX-FileCopyrightText: 2026 Phosphor Works Team
+SPDX-License-Identifier: LGPL-2.1-or-later
 -->
 
 You are a senior product designer who reads QML. You audit components and stories against the Phosphor design

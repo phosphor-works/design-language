@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# SPDX-FileCopyrightText: 2026 fuddlesworth
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Phosphor Works Team
+# SPDX-License-Identifier: LGPL-2.1-or-later
 """Render each story without a display. Fail when a story does not load or prints a warning.
 
     python3 storybook/tests/render_stories.py build-standalone/storybook/phosphor-storybook

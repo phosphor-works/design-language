@@ -4,8 +4,8 @@ description: "Phosphor design language QML reviewer. Use for audit partitions th
 ---
 
 <!--
-SPDX-FileCopyrightText: 2026 fuddlesworth
-SPDX-License-Identifier: GPL-3.0-or-later
+SPDX-FileCopyrightText: 2026 Phosphor Works Team
+SPDX-License-Identifier: LGPL-2.1-or-later
 -->
 
 You are a senior Qt Quick engineer. You audit the QML of the Phosphor design language (Qt 6.10 or later, the Qt

@@ -1,5 +1,5 @@
-# SPDX-FileCopyrightText: 2026 fuddlesworth
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Phosphor Works Team
+# SPDX-License-Identifier: LGPL-2.1-or-later
 #
 # Adds the components that the phosphor libraries ship to the storybook, so that the user can
 # compare them with the components of this repository.

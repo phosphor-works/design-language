@@ -1,5 +1,5 @@
-# SPDX-FileCopyrightText: 2026 fuddlesworth
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Phosphor Works Team
+# SPDX-License-Identifier: LGPL-2.1-or-later
 #
 # The sources that the storybook builds and that are not in this repository: one commit of
 # phosphor-libs and one commit of phosphor-shell-libs. Each is pinned to its archive by commit, URL

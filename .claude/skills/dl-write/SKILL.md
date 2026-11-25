@@ -4,8 +4,8 @@ description: "Write and check text for the Phosphor design language with ASD-STE
 ---
 
 <!--
-SPDX-FileCopyrightText: 2026 fuddlesworth
-SPDX-License-Identifier: GPL-3.0-or-later
+SPDX-FileCopyrightText: 2026 Phosphor Works Team
+SPDX-License-Identifier: LGPL-2.1-or-later
 -->
 
 # Write text for this repository

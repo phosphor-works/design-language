@@ -4,8 +4,8 @@ description: "Add or change a component, a control, a token or an icon of the Ph
 ---
 
 <!--
-SPDX-FileCopyrightText: 2026 fuddlesworth
-SPDX-License-Identifier: GPL-3.0-or-later
+SPDX-FileCopyrightText: 2026 Phosphor Works Team
+SPDX-License-Identifier: LGPL-2.1-or-later
 -->
 
 # Add a component
@@ -30,7 +30,7 @@ a type.
 2. Write a comment at the top that tells the purpose of the component and its use.
 3. Add the file to the `qmldir` of its module: `Name 1.0 Name.qml`. For a singleton, write
    `singleton Name 1.0 Name.qml`.
-4. Write the story in `storybook/stories/NN-Group/Name.qml` (`GPL-3.0-or-later`).
+4. Write the story in `storybook/stories/NN-Group/Name.qml`.
 5. Render the story in the two schemes (`dl-verify-render`).
 6. Check the text (`dl-write`).
 

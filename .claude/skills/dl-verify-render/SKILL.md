@@ -4,8 +4,8 @@ description: "Check a change to a Phosphor component or story with a render that
 ---
 
 <!--
-SPDX-FileCopyrightText: 2026 fuddlesworth
-SPDX-License-Identifier: GPL-3.0-or-later
+SPDX-FileCopyrightText: 2026 Phosphor Works Team
+SPDX-License-Identifier: LGPL-2.1-or-later
 -->
 
 # Verify a change with a render
