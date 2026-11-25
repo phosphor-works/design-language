@@ -1,6 +1,17 @@
+<!-- SPDX-FileCopyrightText: 2026 Phosphor Works Team -->
+<!-- SPDX-License-Identifier: LGPL-2.1-or-later -->
+
 # design-language
-Design language for the Phosphor suite: color, type, space and motion tokens, a Qt Quick Controls style, QML components and a storybook that runs them live
+
+design-language is the repository of the design language of the Phosphor suite. It has no source files.
+
+## Contents
+
+| File | Contents |
+| --- | --- |
+| `README.md` | This page |
+| `COPYING.LESSER` | The license text |
 
 ## License
 
-LGPL-2.1-or-later. See `COPYING.LESSER`.
+The design language is licensed under LGPL-2.1-or-later. The license text is in `COPYING.LESSER`.
