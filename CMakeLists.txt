@@ -1,5 +1,5 @@
-# SPDX-FileCopyrightText: 2026 fuddlesworth
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Phosphor Works Team
+# SPDX-License-Identifier: LGPL-2.1-or-later
 
 cmake_minimum_required(VERSION 3.25)
 
@@ -16,15 +16,13 @@ endif()
 
 include(GNUInstallDirs)
 
-# The presets set this to ON. The tests render each story, check the text and test the guard hook.
+# The presets set this to ON. The tests render each story and check the text.
 option(BUILD_TESTING "Build and register the tests" OFF)
 if(BUILD_TESTING)
     enable_testing()
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
     add_test(NAME prose
              COMMAND Python3::Interpreter "${CMAKE_CURRENT_SOURCE_DIR}/.claude/skills/dl-write/check_prose.py" --errors)
-    add_test(NAME guard
-             COMMAND Python3::Interpreter "${CMAKE_CURRENT_SOURCE_DIR}/.claude/hooks/test_guard.py")
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")

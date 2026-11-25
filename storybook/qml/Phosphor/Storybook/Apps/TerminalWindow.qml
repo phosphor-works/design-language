@@ -1,5 +1,5 @@
-// SPDX-FileCopyrightText: 2026 fuddlesworth
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2026 Phosphor Works Team
+// SPDX-License-Identifier: LGPL-2.1-or-later
 
 import QtQuick
 import QtQuick.Controls
@@ -17,7 +17,7 @@ WindowFrame {
     property var tabs: ["shell-design", "build", "logs"]
     property int tab: 0
     // Each line is a list of [color name, text]. An empty line is a gap.
-    property var lines: [[["rose", "❯ "], ["text", "cmake --build build"]], [["cyan", "[128/128] "], ["text", "Linking phosphor-storybook"]], [], [["rose", "❯ "], ["text", "ctest --preset standalone"]], [["green", "✓ "], ["muted", "prose"]], [["green", "✓ "], ["muted", "guard"]], [["green", "✓ "], ["muted", "stories-render-dark"]], [["green", "✓ "], ["muted", "stories-render-light"]], [], [["cyan", "100% tests passed"]], [], [["rose", "❯ "]]]
+    property var lines: [[["rose", "❯ "], ["text", "cmake --build build"]], [["cyan", "[128/128] "], ["text", "Linking phosphor-storybook"]], [], [["rose", "❯ "], ["text", "ctest --preset standalone"]], [["green", "✓ "], ["muted", "prose"]], [["green", "✓ "], ["muted", "stories-render-dark"]], [["green", "✓ "], ["muted", "stories-render-light"]], [], [["cyan", "100% tests passed"]], [], [["rose", "❯ "]]]
 
     signal tabPicked(int index)
 

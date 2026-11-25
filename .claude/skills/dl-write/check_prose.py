@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# SPDX-FileCopyrightText: 2026 fuddlesworth
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Phosphor Works Team
+# SPDX-License-Identifier: LGPL-2.1-or-later
 """Find prose that breaks the writing rules of this repository (ASD-STE100 principles).
 
     python3 .claude/skills/dl-write/check_prose.py            # every document, guide page and comment
@@ -84,10 +84,17 @@ def check(text, where, problems):
 
 def markdown_text(source):
     """Yield (line number, paragraph) of the prose of a Markdown file. Code, tables and front matter are left out,
-    except the description of the front matter."""
+    except the description of the front matter. The shared block of a CLAUDE.md is left out too: the workspace
+    repository writes it."""
     lines = source.splitlines()
-    paragraph, start, fenced, front = [], 0, False, False
+    paragraph, start, fenced, front, shared = [], 0, False, False, False
     for number, line in enumerate(lines, 1):
+        if line.startswith('<!-- BEGIN shared:'):
+            shared = True
+        elif line.startswith('<!-- END shared -->'):
+            shared = False
+        if shared:
+            continue
         if number == 1 and line == '---':
             front = True
             continue
@@ -178,8 +185,8 @@ def texts(path):
 
 
 def default_files():
-    patterns = ['CLAUDE.md', 'README.md', '.claude/skills/dl-*/SKILL.md', '.claude/skills/record-lesson/SKILL.md',
-                '.claude/agents/review/*.md', 'qml/**/*.qml', 'storybook/**/*.qml', 'storybook/*.cpp', 'storybook/*.h',
+    patterns = ['CLAUDE.md', 'README.md', '.claude/skills/dl-*/SKILL.md', '.claude/agents/review/*.md',
+                'qml/**/*.qml', 'storybook/**/*.qml', 'storybook/*.cpp', 'storybook/*.h',
                 'storybook/tests/*.py', 'CMakeLists.txt', 'storybook/CMakeLists.txt', 'cmake/*.cmake',
                 '.github/ci/*.txt']
     for pattern in patterns:

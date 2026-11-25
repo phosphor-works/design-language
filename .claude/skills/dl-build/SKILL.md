@@ -4,8 +4,8 @@ description: "Configure, build and run the Phosphor design language and its stor
 ---
 
 <!--
-SPDX-FileCopyrightText: 2026 fuddlesworth
-SPDX-License-Identifier: GPL-3.0-or-later
+SPDX-FileCopyrightText: 2026 Phosphor Works Team
+SPDX-License-Identifier: LGPL-2.1-or-later
 -->
 
 # Build and run the storybook
@@ -32,18 +32,18 @@ To check QML, use `dl-verify-render`.
 ```sh
 cmake --workflow --preset standalone
 cmake --preset dev
-systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 cmake --build --preset dev --parallel 6
+systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 cmake --build --preset dev
 ctest --preset dev
 ```
 
-The `--workflow` command configures, builds and runs the tests. CI runs that command in an Arch container
-(`.github/workflows/ci.yml`). There are four tests:
+The `--workflow` command configures, builds and runs the tests. A build preset uses 3 jobs. CI is the shared C++
+CI of the workspace repository, with the `standalone` preset in an Arch container (`.github/workflows/ci.yml`).
+There are three tests:
 
 | Test | What it checks |
 | --- | --- |
 | `stories-render-dark`, `stories-render-light` | Each story loads and prints no warning (`storybook/tests/render_stories.py`) |
 | `prose` | The text has no error from the checker of `dl-write` |
-| `guard` | The cases of `.claude/hooks/test_guard.py` |
 
 Each preset sets `BUILD_TESTING=ON`. Without a preset, the default is `OFF`, and CTest then finds no tests.
 

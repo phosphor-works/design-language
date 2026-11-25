@@ -47,15 +47,23 @@
     ],
     "buildPresets": [
         {
+            "name": "base",
+            "hidden": true,
+            "jobs": 3
+        },
+        {
             "name": "dev",
+            "inherits": "base",
             "configurePreset": "dev"
         },
         {
             "name": "local",
+            "inherits": "base",
             "configurePreset": "local"
         },
         {
             "name": "standalone",
+            "inherits": "base",
             "configurePreset": "standalone"
         }
     ],
