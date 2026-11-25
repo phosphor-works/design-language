@@ -1,0 +1,150 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 25,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "generator": "Ninja",
+            "cacheVariables": {
+                "BUILD_TESTING": "ON",
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+        {
+            "name": "dev",
+            "displayName": "Development, with tests, and with the stories of the pinned phosphor libraries",
+            "inherits": "base",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "PHOSPHOR_DESIGN_WITH_PHOSPHOR": "ON"
+            }
+        },
+        {
+            "name": "local",
+            "displayName": "As dev, with the phosphor-libs and phosphor-shell-libs checkouts next to this repository",
+            "inherits": "dev",
+            "binaryDir": "${sourceDir}/build-local",
+            "cacheVariables": {
+                "CPM_phosphor-libs_SOURCE": "${sourceDir}/../phosphor-libs",
+                "CPM_phosphor-shell-libs_SOURCE": "${sourceDir}/../phosphor-shell-libs"
+            }
+        },
+        {
+            "name": "standalone",
+            "displayName": "Qt only, with tests: no phosphor libraries, the library's own stories",
+            "inherits": "base",
+            "binaryDir": "${sourceDir}/build-standalone",
+            "cacheVariables": {
+                "PHOSPHOR_DESIGN_WITH_PHOSPHOR": "OFF"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "jobs": 3
+        },
+        {
+            "name": "dev",
+            "inherits": "base",
+            "configurePreset": "dev"
+        },
+        {
+            "name": "local",
+            "inherits": "base",
+            "configurePreset": "local"
+        },
+        {
+            "name": "standalone",
+            "inherits": "base",
+            "configurePreset": "standalone"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error"
+            }
+        },
+        {
+            "name": "dev",
+            "inherits": "base",
+            "configurePreset": "dev"
+        },
+        {
+            "name": "local",
+            "inherits": "base",
+            "configurePreset": "local"
+        },
+        {
+            "name": "standalone",
+            "inherits": "base",
+            "configurePreset": "standalone"
+        }
+    ],
+    "workflowPresets": [
+        {
+            "name": "dev",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "dev"
+                },
+                {
+                    "type": "build",
+                    "name": "dev"
+                },
+                {
+                    "type": "test",
+                    "name": "dev"
+                }
+            ]
+        },
+        {
+            "name": "local",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "local"
+                },
+                {
+                    "type": "build",
+                    "name": "local"
+                },
+                {
+                    "type": "test",
+                    "name": "local"
+                }
+            ]
+        },
+        {
+            "name": "standalone",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "standalone"
+                },
+                {
+                    "type": "build",
+                    "name": "standalone"
+                },
+                {
+                    "type": "test",
+                    "name": "standalone"
+                }
+            ]
+        }
+    ]
+}

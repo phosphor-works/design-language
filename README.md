@@ -1,5 +1,71 @@
+<!-- SPDX-FileCopyrightText: 2026 Phosphor Works Team -->
+<!-- SPDX-License-Identifier: LGPL-2.1-or-later -->
+
 # design-language
-Design language for the Phosphor suite: color, type, space and motion tokens, a Qt Quick Controls style, QML components and a storybook that runs them live
+
+The design language of the [phosphor-works](https://github.com/phosphor-works) apps. It gives one appearance and
+one motion to the Lambent shell, Facet, Afterglow, and the editor and settings of PlasmaZones.
+
+| Part | Purpose |
+| --- | --- |
+| `Phosphor.Design` | The tokens for color, type, space, shape and motion, and the components that Qt Quick Controls does not have |
+| `Phosphor.Style` | A Qt Quick Controls style that uses the tokens |
+| `phosphor-storybook` | A tool that shows each component in each of its states, with the design guide |
+
+The two modules are QML files in `qml/`. They import only Qt.
+
+The repository is not released, and no app uses it at this time.
+
+## Build
+
+The build needs CMake 3.25, Ninja, a C++20 compiler, Python 3 and Qt 6.10 (Quick and Quick Controls).
+
+```sh
+cmake --workflow --preset standalone
+```
+
+That command configures into `build-standalone/`, builds the storybook and runs the tests. The tests render each
+story without a display, in the dark scheme and in the light scheme.
+
+The `dev` preset also builds nine libraries from [phosphor-libs](https://github.com/phosphor-works/phosphor-libs)
+and [phosphor-shell-libs](https://github.com/phosphor-works/phosphor-shell-libs). The storybook then shows the
+components that ship there next to the components of this repository. The first configure downloads the two
+commits that `cmake/DesignDependencies.cmake` pins into `.cache/cpm`. This preset also needs
+extra-cmake-modules, Wayland and the private headers of Qt.
+
+The `local` preset builds the same libraries from the checkouts at `../phosphor-libs` and
+`../phosphor-shell-libs`. Use it to see a branch of those repositories in the storybook.
+
+## The storybook
+
+```sh
+build-standalone/storybook/phosphor-storybook
+```
+
+The storybook loads the QML from the source tree. When you save a file, the storybook loads the QML again and
+keeps the current story. The toolbar changes the scheme, the accent, the corner radius, the density and the speed
+of motion.
+
+The Foundations group is the design guide: principles, color, typography, spacing, layout, shape, icons, motion,
+states, writing and accessibility. Each table in the guide reads its values from the tokens.
+
+```sh
+build-standalone/storybook/phosphor-storybook --list
+build-standalone/storybook/phosphor-storybook --story controls-button --shot button.png
+```
+
+The first command prints the id of each story. The second command renders one story to a file and opens no window.
+
+## Use from an app
+
+`cmake --install` copies the two modules into the QML directory of Qt. An app then selects the style before it
+loads its QML:
+
+```cpp
+QQuickStyle::setStyle(QStringLiteral("Phosphor.Style"));
+```
+
+A QML file gets the tokens and the components with `import Phosphor.Design`.
 
 ## License
 

@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Phosphor Works Team
+# SPDX-License-Identifier: LGPL-2.1-or-later
+
+module Phosphor.Storybook.Apps
+SettingsWindow 1.0 SettingsWindow.qml
+TerminalWindow 1.0 TerminalWindow.qml

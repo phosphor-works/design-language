@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: 2026 Phosphor Works Team
+# SPDX-License-Identifier: CC0-1.0
+#
+# Licenses for files that cannot carry an SPDX header.
+
+version = 1
+
+[[annotations]]
+path = [".claude/settings.json", "CMakePresets.json"]
+SPDX-FileCopyrightText = "2026 Phosphor Works Team"
+SPDX-License-Identifier = "CC0-1.0"
+
+# The sample pictures of the stories: covers that a script drew from the brand colors.
+[[annotations]]
+path = ["storybook/assets/*.jpg"]
+SPDX-FileCopyrightText = "2026 Phosphor Works Team"
+SPDX-License-Identifier = "CC0-1.0"
