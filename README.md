@@ -1,7 +1,7 @@
-<!-- SPDX-FileCopyrightText: 2026 fuddlesworth -->
-<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- SPDX-FileCopyrightText: 2026 Phosphor Works Team -->
+<!-- SPDX-License-Identifier: LGPL-2.1-or-later -->
 
-# Phosphor design language
+# design-language
 
 The design language of the [phosphor-works](https://github.com/phosphor-works) apps. It gives one appearance and
 one motion to the Lambent shell, Facet, Afterglow, and the editor and settings of PlasmaZones.
@@ -12,7 +12,7 @@ one motion to the Lambent shell, Facet, Afterglow, and the editor and settings o
 | `Phosphor.Style` | A Qt Quick Controls style that uses the tokens |
 | `phosphor-storybook` | A tool that shows each component in each of its states, with the design guide |
 
-The two modules are QML files in `qml/`. They import only Qt, so an app with a different license can use them.
+The two modules are QML files in `qml/`. They import only Qt.
 
 The repository is not released, and no app uses it at this time.
 
@@ -69,6 +69,4 @@ A QML file gets the tokens and the components with `import Phosphor.Design`.
 
 ## License
 
-The modules in `qml/` use LGPL-2.1-or-later. The storybook, the build files and the mockup use GPL-3.0-or-later.
-Each file identifies its license. `REUSE.toml` identifies the license of a file that has no header.
-The [LICENSES directory](LICENSES) contains the license texts.
+LGPL-2.1-or-later. See `COPYING.LESSER`.
